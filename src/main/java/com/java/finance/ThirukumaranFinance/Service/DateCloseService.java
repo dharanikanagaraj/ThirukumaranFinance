@@ -29,6 +29,8 @@ public class DateCloseService {
 			dateCloseRepository.save(dateClose);
 			return "Date close  created Successfully";
 		} catch (Exception e) {
+			System.out.println("Exception is ::::" + e.getMessage());
+			e.printStackTrace();
 			return "Failed to create dateClose";
 		}
 	}
