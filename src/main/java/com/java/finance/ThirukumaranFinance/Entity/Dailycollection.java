@@ -41,7 +41,7 @@ public class Dailycollection {
 	@Column(name = "created_on")
 	private LocalDateTime createdOn;
 	
-	@Column(name = "updtaed_on")
+	@Column(name = "updated_on")
 	private LocalDateTime updatedOn;
 	
 	@ManyToOne(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY) 
