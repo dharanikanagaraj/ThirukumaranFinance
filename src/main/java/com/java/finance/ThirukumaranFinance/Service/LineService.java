@@ -1,6 +1,7 @@
 package com.java.finance.ThirukumaranFinance.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,12 +74,14 @@ public class LineService {
 
 	public List<LineDto> getAllLineWithDateClose() {
 		var response = new ArrayList<LineDto>();
+		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");    
 		var entity = lineRepository.findAll();
 		for (int i = 0; i < entity.size(); i++) {
 			LineDto lineDto = new LineDto();
 			var dateClose = dateCloseRepository.findByLineId(entity.get(i).getLineId());
 			if (dateClose.size() > 0 && !dateClose.isEmpty()) {
-				lineDto.setDate(dateClose.get(0).getDate());
+				String strDate = dateClose.get(0).getDate().format(formatters);
+				lineDto.setDate(strDate);
 			}
 			lineDto.setLineId(entity.get(i).getLineId());
 			lineDto.setLineName(entity.get(i).getLineName());

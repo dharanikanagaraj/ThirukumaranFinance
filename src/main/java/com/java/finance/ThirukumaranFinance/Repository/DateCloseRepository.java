@@ -1,5 +1,6 @@
 package com.java.finance.ThirukumaranFinance.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +15,8 @@ public interface DateCloseRepository extends JpaRepository<DateClose, Long> {
 
 	@Query(value = "SELECT * FROM date_close dc WHERE dc.line_id = :lineId order by dc.created_on desc", nativeQuery = true)
 	List<DateClose> findByLineId(@Param("lineId") String lineId);
+
+	@Query(value = "SELECT * FROM date_close dc WHERE dc.line_id = :lineId and dc.date =:date", nativeQuery = true)
+	DateClose findByDate(@Param("lineId") String lineId,@Param("date")LocalDate parsedDate);
 
 }

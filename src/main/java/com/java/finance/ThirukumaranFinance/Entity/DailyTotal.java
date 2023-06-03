@@ -25,7 +25,7 @@ public class DailyTotal {
 	private int id;
 	
 	@Column(name = "total_amount")
-	private String totalAmount;
+	private long totalAmount;
 	
 	@Column(name = "date")
 	private LocalDate date;

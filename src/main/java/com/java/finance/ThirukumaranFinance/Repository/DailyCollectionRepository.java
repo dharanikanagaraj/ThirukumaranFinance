@@ -25,4 +25,7 @@ public interface DailyCollectionRepository extends JpaRepository<Dailycollection
 	@Query(value = "SELECT * FROM daily_amount_collection dc WHERE dc.loan_id = :loanId", nativeQuery = true)
 	List<Dailycollection> getAllByLoanId(@Param("loanId")int loanId);
 
+	@Query(value = "SELECT sum(amount_paid) FROM daily_amount_collection dc WHERE dc.line_id = :lineId and dc.date = :date", nativeQuery = true)
+	Long getTotalAmountForAllCollection(@Param("lineId") String lineId, @Param("date") LocalDate date);
+
 }

@@ -73,7 +73,7 @@ public class DailyCollectionService {
 				Map<String, String> map = new HashMap<String, String>();
 				if (!list.isEmpty()) {
 					for (int j = 0; j < list.size(); j++) {
-						map.put(list.get(j).getDate().toString(), list.get(j).getAmountPaid());
+						map.put(list.get(j).getDate().toString(), String.valueOf(list.get(j).getAmountPaid()));
 					}
 				}
 				dailyCollectionData.setDate(map);
@@ -106,7 +106,7 @@ public class DailyCollectionService {
 				}
 				loanRepository.save(loanData);
 				var dailyCollection = new Dailycollection();
-				dailyCollection.setAmountPaid(request.getAmountPaid());
+				dailyCollection.setAmountPaid(Integer.parseInt(request.getAmountPaid()));
 				LocalDate parsedDate = LocalDate.parse(request.getDate(), formatter);
 				dailyCollection.setDate(parsedDate);
 				dailyCollection.setCreatedOn(LocalDateTime.now());
@@ -133,7 +133,7 @@ public class DailyCollectionService {
 				BillEntryResponse data = new BillEntryResponse();
 				data.setLoanNo(dailyCollection.get(i).getLoan().getLoanNo());
 				data.setName(dailyCollection.get(i).getLoan().getName());
-				data.setBillAmount(dailyCollection.get(i).getAmountPaid());
+				data.setBillAmount(String.valueOf(dailyCollection.get(i).getAmountPaid()));
 				data.setExcess(dailyCollection.get(i).getLoan().getExcessAmount());
 				data.setTime(dailyCollection.get(i).getUpdatedOn().toLocalTime().toString());
 				response.add(data);
@@ -195,7 +195,7 @@ public class DailyCollectionService {
 				LocalDate parsedDate = LocalDate.parse(request.getDate(), formatter);
 				var dailyCollection = dailyCollectionRepository.getByLoanId(loanData.getLoanId(), parsedDate);
 				if (dailyCollection != null) {
-					dailyCollection.setAmountPaid(request.getNewAmountPaid());
+					dailyCollection.setAmountPaid(Integer.parseInt(request.getNewAmountPaid()));
 					dailyCollection.setUpdatedOn(LocalDateTime.now());
 					dailyCollectionRepository.save(dailyCollection);
 				}
@@ -215,7 +215,7 @@ public class DailyCollectionService {
 		var loanData = loanRepository.findByLoanNoAndLineId(request.getLineId(), request.getLoanNo());
 		var dailyCollection = dailyCollectionRepository.getByLoanId(loanData.getLoanId(), parsedDate);
 		if (dailyCollection != null) {
-			response.setAmountPaid(dailyCollection.getAmountPaid());
+			response.setAmountPaid(String.valueOf(dailyCollection.getAmountPaid()));
 		}
 		return response;
 	}

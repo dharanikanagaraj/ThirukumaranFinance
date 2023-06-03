@@ -12,6 +12,7 @@ import com.java.finance.ThirukumaranFinance.Domain.IndividualReportCollectionRes
 import com.java.finance.ThirukumaranFinance.Domain.IndividualReportLoanResponse;
 import com.java.finance.ThirukumaranFinance.Domain.PastDateBillResponse;
 import com.java.finance.ThirukumaranFinance.Repository.DailyCollectionRepository;
+import com.java.finance.ThirukumaranFinance.Repository.DailyTotalRepository;
 import com.java.finance.ThirukumaranFinance.Repository.LoneRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class ReportService {
 
 	private final LoneRepository loneRepository;
 	private final DailyCollectionRepository dailyCollectionRepository;
+	private final DailyTotalRepository dailyTotalRepository;
 
 	public List<IndividualReportLoanResponse> getActiveLoan(String lineId) {
 		var response = new ArrayList<IndividualReportLoanResponse>();
@@ -52,7 +54,7 @@ public class ReportService {
 				IndividualReportCollectionResponse data = new IndividualReportCollectionResponse();
 				data.setId(dailyCollection.get(i).getId());
 				data.setDate(dailyCollection.get(i).getDate().toString());
-				data.setBillAmount(dailyCollection.get(i).getAmountPaid());
+				data.setBillAmount(String.valueOf(dailyCollection.get(i).getAmountPaid()));
 				response.add(data);
 				}
 			}
@@ -71,7 +73,7 @@ public class ReportService {
 				data.setLoanNo(dailyCollection.get(i).getLoan().getLoanNo());
 				data.setName(dailyCollection.get(i).getLoan().getName());
 				data.setAddress(dailyCollection.get(i).getLoan().getAddress());
-				data.setBillAmount(dailyCollection.get(i).getAmountPaid());
+				data.setBillAmount(String.valueOf(dailyCollection.get(i).getAmountPaid()));
 				data.setExcess(dailyCollection.get(i).getLoan().getExcessAmount());
 				response.add(data);
 			}
@@ -90,7 +92,7 @@ public class ReportService {
 				data.setLoanNo(dailyCollection.get(i).getLoan().getLoanNo());
 				data.setName(dailyCollection.get(i).getLoan().getName());
 				data.setAddress(dailyCollection.get(i).getLoan().getAddress());
-				data.setBillAmount(dailyCollection.get(i).getAmountPaid());
+				data.setBillAmount(String.valueOf(dailyCollection.get(i).getAmountPaid()));
 				var payamount = Integer.parseInt(dailyCollection.get(i).getLoan().getLoanAmount()) / 100;
 				data.setPayAmount(String.valueOf(payamount));
 				data.setDate(date);
@@ -113,9 +115,27 @@ public class ReportService {
 				data.setDate(loanData.get(i).getLoanClosedDate().toString());
 				var dailyCollection = dailyCollectionRepository.getByLoanId(loanData.get(i).getLoanId(), loanData.get(i).getLoanClosedDate());
 				if (dailyCollection != null) {
-					data.setPayAmount(dailyCollection.getAmountPaid());
+					data.setPayAmount(String.valueOf(dailyCollection.getAmountPaid()));
 				}
 				response.add(data);
+			}
+		}
+		return response;
+	}
+
+	public List<IndividualReportCollectionResponse> getMonthlyBill(String lineId, String startDate, String endDate) {
+		var response = new ArrayList<IndividualReportCollectionResponse>();
+		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		LocalDate startParsedDate = LocalDate.parse(startDate, formatters);
+		LocalDate endParsedDate = LocalDate.parse(endDate, formatters);
+		var totalData = dailyTotalRepository.findTotalForParticularRange(lineId,startParsedDate,endParsedDate);
+		if(!totalData.isEmpty()) {
+			for(int i=0;i<totalData.size();i++) {
+			IndividualReportCollectionResponse data = new IndividualReportCollectionResponse();
+			data.setId(totalData.get(i).getId());
+			data.setDate(totalData.get(i).getDate().toString());
+			data.setBillAmount(String.valueOf(totalData.get(i).getTotalAmount()));
+			response.add(data);
 			}
 		}
 		return response;

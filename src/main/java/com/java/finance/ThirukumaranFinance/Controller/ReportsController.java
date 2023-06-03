@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.java.finance.ThirukumaranFinance.Domain.BillNotPaidResponse;
 import com.java.finance.ThirukumaranFinance.Domain.DateCloseRequest;
+import com.java.finance.ThirukumaranFinance.Domain.DateRequest;
 import com.java.finance.ThirukumaranFinance.Domain.DeleteLoanRequest;
 import com.java.finance.ThirukumaranFinance.Domain.IndividualReportCollectionResponse;
 import com.java.finance.ThirukumaranFinance.Domain.IndividualReportLoanResponse;
@@ -55,6 +56,12 @@ public class ReportsController {
     @GetMapping("/excess")
     public List<BillNotPaidResponse> getExcessAmount(@RequestBody LineIdRequest request) {
 		var response = reportService.getExcessAmount(request.getLineId());
+		return response;
+	}
+    
+    @GetMapping("/monthlyBill")
+    public List<IndividualReportCollectionResponse> getMonthlyBill(@RequestBody DateRequest request) {
+		var response = reportService.getMonthlyBill(request.getLineId(),request.getStartDate(),request.getEndDate());
 		return response;
 	}
 

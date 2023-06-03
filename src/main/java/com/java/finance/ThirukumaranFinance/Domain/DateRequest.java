@@ -3,11 +3,11 @@ package com.java.finance.ThirukumaranFinance.Domain;
 import lombok.Data;
 
 @Data
-public class LineDto {
+public class DateRequest {
 	
-	private String date;
-
 	private String lineId;
 	
-	private String lineName;
+	private String startDate;
+
+	private String endDate;
 }
