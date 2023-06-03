@@ -30,7 +30,7 @@ public class Dailycollection {
 	private int id;
 	
 	@Column(name = "amount_paid")
-	private long amountPaid;
+	private int amountPaid;
 	
 	@Column(name = "date")
 	private LocalDate date;

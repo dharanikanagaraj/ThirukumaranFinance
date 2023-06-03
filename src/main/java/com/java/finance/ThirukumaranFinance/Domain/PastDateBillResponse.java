@@ -9,9 +9,9 @@ public class PastDateBillResponse {
 
 	private String name;
 	
-	private String billAmount;
+	private int billAmount;
 	
-	private String excess;
+	private int excess;
 	
 	private String address;
 	

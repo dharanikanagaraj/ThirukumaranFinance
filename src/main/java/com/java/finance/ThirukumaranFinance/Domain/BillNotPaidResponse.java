@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class BillNotPaidResponse extends PastDateBillResponse{
 	
-	private String payAmount;
+	private int payAmount;
 	
 	private String date;
 	

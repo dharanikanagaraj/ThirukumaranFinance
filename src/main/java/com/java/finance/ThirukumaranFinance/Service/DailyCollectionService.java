@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -42,7 +41,7 @@ public class DailyCollectionService {
 				dailyCollectionData.setName(loanData.get(i).getName());
 				dailyCollectionData.setAddress(loanData.get(i).getAddress());
 				dailyCollectionData.setBalance(loanData.get(i).getBalance());
-				var payamount = Integer.parseInt(loanData.get(i).getLoanAmount()) / 100;
+				var payamount = (loanData.get(i).getLoanAmount()) / 100;
 				dailyCollectionData.setPayAmount(String.valueOf(payamount));
 				response.add(dailyCollectionData);
 			}
@@ -65,15 +64,13 @@ public class DailyCollectionService {
 				dailyCollectionData.setName(loanData.get(i).getName());
 				dailyCollectionData.setAddress(loanData.get(i).getAddress());
 				dailyCollectionData.setBalance(loanData.get(i).getBalance());
-				var payamount = Integer.parseInt(loanData.get(i).getLoanAmount()) / 100;
+				var payamount = (loanData.get(i).getLoanAmount()) / 100;
 				dailyCollectionData.setPayAmount(String.valueOf(payamount));
-				var data = loanData.get(i).getDailyCollectionList();
-				var list = data.stream().filter(dates -> dates.getDate().isAfter(belowTenDaysDate)
-						&& dates.getDate().isBefore(date.plusDays(1))).collect(Collectors.toList());
+				var dailyCollection = dailyCollectionRepository.getAmountPaidForParticularDateRange(lineId, belowTenDaysDate, localDate, loanData.get(i).getLoanId());
 				Map<String, String> map = new HashMap<String, String>();
-				if (!list.isEmpty()) {
-					for (int j = 0; j < list.size(); j++) {
-						map.put(list.get(j).getDate().toString(), String.valueOf(list.get(j).getAmountPaid()));
+				if (!dailyCollection.isEmpty()) {
+					for (int j = 0; j < dailyCollection.size(); j++) {
+						map.put(dailyCollection.get(j).getDate().toString(), String.valueOf(dailyCollection.get(j).getAmountPaid()));
 					}
 				}
 				dailyCollectionData.setDate(map);
@@ -91,18 +88,18 @@ public class DailyCollectionService {
 			LocalDate date = LocalDate.parse(formattedDate, formatter);
 			var loanData = loanRepository.findByLoanNoAndLineId(request.getLineId(), request.getLoanNo());
 			if (loanData != null) {
-				var balance = Integer.parseInt(loanData.getBalance()) - Integer.parseInt(request.getAmountPaid());
+				int balance = loanData.getBalance() - Integer.parseInt(request.getAmountPaid());
 				loanData.setDailyUpdate(true);
-				loanData.setBalance(String.valueOf(balance));
+				loanData.setBalance(balance);
 				if (balance == 0) {
 					loanData.setLoanClosedDate(date);
 					loanData.setLoanActive(false);
 				} else if (balance < 0) {
 					var excessAmount = Math.abs(balance);
-					loanData.setBalance("0");
+					loanData.setBalance(0);
 					loanData.setLoanClosedDate(date);
 					loanData.setLoanActive(false);
-					loanData.setExcessAmount(String.valueOf(excessAmount));
+					loanData.setExcessAmount(excessAmount);
 				}
 				loanRepository.save(loanData);
 				var dailyCollection = new Dailycollection();
@@ -133,7 +130,7 @@ public class DailyCollectionService {
 				BillEntryResponse data = new BillEntryResponse();
 				data.setLoanNo(dailyCollection.get(i).getLoan().getLoanNo());
 				data.setName(dailyCollection.get(i).getLoan().getName());
-				data.setBillAmount(String.valueOf(dailyCollection.get(i).getAmountPaid()));
+				data.setBillAmount(dailyCollection.get(i).getAmountPaid());
 				data.setExcess(dailyCollection.get(i).getLoan().getExcessAmount());
 				data.setTime(dailyCollection.get(i).getUpdatedOn().toLocalTime().toString());
 				response.add(data);
@@ -150,44 +147,44 @@ public class DailyCollectionService {
 			LocalDate date = LocalDate.parse(formattedDate, formatter);
 			var loanData = loanRepository.findByLoanNoAndLineId(request.getLineId(), request.getLoanNo());
 			if (loanData != null) {
-				var balance = Integer.parseInt(loanData.getBalance()) + Integer.parseInt(request.getOldAmount());
+				var balance = (loanData.getBalance()) + Integer.parseInt(request.getOldAmount());
 				balance = balance - Integer.parseInt(request.getNewAmountPaid());
-				if (loanData.getBalance().equals("0")) {
+				if (loanData.getBalance() == 0) {
 					if (balance == 0) {
-						loanData.setBalance("0");
+						loanData.setBalance(0);
 						loanData.setLoanClosedDate(date);
 						loanData.setLoanActive(false);
 						loanData.setDailyUpdate(true);
 					} else if (balance < 0) {
 						var excessAmount = Math.abs(balance);
-						loanData.setBalance("0");
+						loanData.setBalance(0);
 						loanData.setLoanClosedDate(date);
 						loanData.setLoanActive(false);
-						loanData.setExcessAmount(String.valueOf(excessAmount));
+						loanData.setExcessAmount(excessAmount);
 						loanData.setDailyUpdate(true);
 					} else {
 						loanData.setLoanClosedDate(null);
 						loanData.setLoanActive(true);
-						loanData.setExcessAmount(null);
-						loanData.setBalance(String.valueOf(balance));
+						loanData.setExcessAmount(0);
+						loanData.setBalance(balance);
 						loanData.setDailyUpdate(true);
 					}
 				} else {
 					if (balance == 0) {
-						loanData.setBalance("0");
+						loanData.setBalance(0);
 						loanData.setLoanClosedDate(date);
 						loanData.setLoanActive(false);
 						loanData.setDailyUpdate(true);
 					} else if (balance < 0) {
 						var excessAmount = Math.abs(balance);
-						loanData.setBalance("0");
+						loanData.setBalance(0);
 						loanData.setLoanClosedDate(date);
 						loanData.setLoanActive(false);
-						loanData.setExcessAmount(String.valueOf(excessAmount));
+						loanData.setExcessAmount(excessAmount);
 						loanData.setDailyUpdate(true);
 					} else {
 						loanData.setDailyUpdate(true);
-						loanData.setBalance(String.valueOf(balance));
+						loanData.setBalance(balance);
 					}
 				}
 

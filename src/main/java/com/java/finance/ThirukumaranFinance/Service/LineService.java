@@ -80,7 +80,8 @@ public class LineService {
 			LineDto lineDto = new LineDto();
 			var dateClose = dateCloseRepository.findByLineId(entity.get(i).getLineId());
 			if (dateClose.size() > 0 && !dateClose.isEmpty()) {
-				String strDate = dateClose.get(0).getDate().format(formatters);
+				var date = dateClose.get(0).getDate().plusDays(1);
+				String strDate = date.format(formatters);
 				lineDto.setDate(strDate);
 			}
 			lineDto.setLineId(entity.get(i).getLineId());

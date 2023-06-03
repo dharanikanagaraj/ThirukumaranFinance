@@ -3,22 +3,24 @@ package com.java.finance.ThirukumaranFinance.Domain;
 import lombok.Data;
 
 @Data
-public class IndividualReportLoanResponse {
+public class NipResponse {
 	
 	private String loanNo;
 
 	private String name;
 	
-	private int loanAmount;
+	private String address;
 	
 	private String loanDate;
 	
 	private String closeDate;
 	
-	private String phoneNo;
+	private int loanAmount;
 	
-	private String address;
+	private int paidAmount;
 	
-	private String orderNo;
+	private int balance;
+	
+	private long payDayss;
 	
 }

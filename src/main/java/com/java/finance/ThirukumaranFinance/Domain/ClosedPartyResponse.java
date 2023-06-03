@@ -3,7 +3,7 @@ package com.java.finance.ThirukumaranFinance.Domain;
 import lombok.Data;
 
 @Data
-public class DailyCollectionData {
+public class ClosedPartyResponse {
 	
 	private String loanNo;
 
@@ -11,8 +11,10 @@ public class DailyCollectionData {
 	
 	private String address;
 	
-	private int balance;
+	private int loanAmount;
 	
-	private String payAmount;
+	private String date;
+	
+	private int interest;
 	
 }

@@ -2,7 +2,6 @@ package com.java.finance.ThirukumaranFinance.Controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +27,7 @@ public class DateCloseController {
 		return response;
 	}
 
-	@GetMapping("/all")
+	@PostMapping("/all")
 	public List<DateClose> getAllDateClose(@RequestBody LineIdRequest lineIdRequest) {
 		var response = dateCloseService.getAllDateClose(lineIdRequest.getLineId());
 		return response;

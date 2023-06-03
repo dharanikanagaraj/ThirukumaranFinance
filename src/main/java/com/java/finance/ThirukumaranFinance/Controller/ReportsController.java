@@ -1,23 +1,32 @@
 package com.java.finance.ThirukumaranFinance.Controller;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.java.finance.ThirukumaranFinance.Domain.BillNotPaidResponse;
+import com.java.finance.ThirukumaranFinance.Domain.BulkPaidResponse;
+import com.java.finance.ThirukumaranFinance.Domain.ClosedPartyResponse;
+import com.java.finance.ThirukumaranFinance.Domain.ContinuouslyNotPaidRequest;
 import com.java.finance.ThirukumaranFinance.Domain.DateCloseRequest;
 import com.java.finance.ThirukumaranFinance.Domain.DateRequest;
 import com.java.finance.ThirukumaranFinance.Domain.DeleteLoanRequest;
 import com.java.finance.ThirukumaranFinance.Domain.IndividualReportCollectionResponse;
 import com.java.finance.ThirukumaranFinance.Domain.IndividualReportLoanResponse;
+import com.java.finance.ThirukumaranFinance.Domain.LedgerResponse;
 import com.java.finance.ThirukumaranFinance.Domain.LineIdRequest;
+import com.java.finance.ThirukumaranFinance.Domain.MonthlyLoanResponse;
+import com.java.finance.ThirukumaranFinance.Domain.NipResponse;
 import com.java.finance.ThirukumaranFinance.Domain.PastDateBillResponse;
+import com.java.finance.ThirukumaranFinance.Domain.TotalLedgerRequest;
+import com.java.finance.ThirukumaranFinance.Domain.TotalLedgerResponse;
+import com.java.finance.ThirukumaranFinance.Domain.UpdateOrderRequest;
+import com.java.finance.ThirukumaranFinance.Domain.UserRequest;
+import com.java.finance.ThirukumaranFinance.Domain.UserResponse;
 import com.java.finance.ThirukumaranFinance.Service.ReportService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,60 +38,105 @@ public class ReportsController {
     
     private final ReportService reportService;
     
-    @GetMapping("/individualReport/loan")
+    @PostMapping("/individualReport/loan") // can be used in both individual report and order number page
     public List<IndividualReportLoanResponse> getActiveLoan(@RequestBody LineIdRequest request) {
 		var response = reportService.getActiveLoan(request.getLineId());
 		return response;
 	}
     
-    @GetMapping("/individualReport/dailycollection")
+    @PostMapping("/individualReport/dailycollection")
     public List<IndividualReportCollectionResponse> getAllDailyCollectionForLoan(@RequestBody DeleteLoanRequest request) {
 		var response = reportService.getAllDailyCollectionForLoan(request.getLineId(),request.getLoanNo());
 		return response;
 	}
     
-    @GetMapping("/pastDateBill")
+    @PostMapping("/pastDateBill")
     public List<PastDateBillResponse> getAllPastDateBill(@RequestBody DateCloseRequest request) {
 		var response = reportService.getAllPastDateBill(request.getLineId(),request.getDate());
 		return response;
 	}
     
-    @GetMapping("/billNotPaid")
+    @PostMapping("/billNotPaid")
     public List<BillNotPaidResponse> getAllBillNotPaid(@RequestBody DateCloseRequest request) {
 		var response = reportService.getAllBillNotPaid(request.getLineId(),request.getDate());
 		return response;
 	}
     
-    @GetMapping("/excess")
+    @PostMapping("/excess")
     public List<BillNotPaidResponse> getExcessAmount(@RequestBody LineIdRequest request) {
 		var response = reportService.getExcessAmount(request.getLineId());
 		return response;
 	}
     
-    @GetMapping("/monthlyBill")
+    @PostMapping("/monthlyBill")
     public List<IndividualReportCollectionResponse> getMonthlyBill(@RequestBody DateRequest request) {
 		var response = reportService.getMonthlyBill(request.getLineId(),request.getStartDate(),request.getEndDate());
 		return response;
 	}
+    
+    @PostMapping("/closedParty")
+    public List<ClosedPartyResponse> getAllClosedParty(@RequestBody LineIdRequest request) {
+		var response = reportService.getAllClosedParty(request.getLineId());
+		return response;
+	}
+    
+    @PostMapping("/userList")
+    public List<UserResponse> getAllUserList(@RequestBody LineIdRequest request) {
+		var response = reportService.getAllUserList(request.getLineId());
+		return response;
+	}
+    
+    @PostMapping("/user/pastLoan")
+    public List<ClosedPartyResponse> getAllClosedLoanForUser(@RequestBody UserRequest request) {
+		var response = reportService.getAllClosedLoanForUser(request.getLineId(),request.getUserNo());
+		return response;
+	}
+    
+    @PutMapping("/update/orderNo")
+    public String updateOrderNo(@RequestBody UpdateOrderRequest request) {
+		var response = reportService.updateOrderNo(request.getLineId(),request.getLoanNo(),request.getOrderNo());
+		return response;
+	}
+    
+    @PostMapping("/ContinouslyNotPaid")
+    public List<ClosedPartyResponse> getContinuoslyNotPaidUser(@RequestBody ContinuouslyNotPaidRequest request) {
+		var response = reportService.getContinuoslyNotPaidUser(request.getNumber(),request.getLineId());
+		return response;
+	}
+    
+    @PostMapping("/ledger")
+    public List<LedgerResponse> getLoanForLedger(@RequestBody DateRequest request) {
+		var response = reportService.getLoanForLedger(request.getLineId(),request.getStartDate(),request.getEndDate());
+		return response;
+	}
+    
+    @PostMapping("/nipParty")
+    public List<NipResponse> getNipParty(@RequestBody ContinuouslyNotPaidRequest request) {
+		var response = reportService.getNipParty(request.getLineId(),request.getNumber());
+		return response;
+	}
+    
+    @PostMapping("/bulkPaid")
+    public List<BulkPaidResponse> getBulkPaidLoan(@RequestBody DateRequest request) {
+		var response = reportService.getBulkPaidLoan(request.getLineId(),request.getStartDate(),request.getEndDate());
+		return response;
+	}
 
-    @GetMapping("/reports")
-    public void dummy(@RequestParam String dummyDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate parsedDate = LocalDate.parse(dummyDate, formatter);
-
-        LocalDate belowTwoDaysDate = parsedDate.minusDays(2);
-        LocalDate belowFourDaysDate = parsedDate.minusDays(4);
-
-        System.out.println("2 days: "+belowTwoDaysDate+":::::::"+belowFourDaysDate);
-
-        //lineRepository.findByTwoDate(belowTwoDaysDate, belowFourDaysDate);
-
-
-//        YourEntity entity = new YourEntity();
-//        entity.setDateColumn(parsedDate);
-//
-//        yourEntityRepository.save(entity);
-
+    @PostMapping("/totalLedger/all")
+    public TotalLedgerResponse getLoanForLedger(@RequestBody LineIdRequest request) {
+    	var response = reportService.getLoanForLedger(request.getLineId());
+		return response;
     }
-
+    
+    @PostMapping("/totalLedger/dateRange")
+    public TotalLedgerResponse getLoanForLedgerForDateRange(@RequestBody TotalLedgerRequest request) {
+    	var response = reportService.getLoanForLedgerForDateRange(request.getLineId(),request.getDateRange());
+		return response;
+    }
+    
+    @PostMapping("/monthlyLoan")
+    public MonthlyLoanResponse getMonthlyLoan(@RequestBody DateRequest request) {
+    	var response = reportService.getMonthlyLoan(request.getLineId(),request.getStartDate(),request.getEndDate());
+		return response;
+    }
 }

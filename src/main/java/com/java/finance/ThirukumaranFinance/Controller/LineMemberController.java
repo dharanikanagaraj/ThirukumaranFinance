@@ -42,7 +42,7 @@ public class LineMemberController {
 		return response;
 	}
 
-	@GetMapping("/particular/linemember")
+	@PostMapping("/particular/linemember")
 	public LineMember getParticularLineMember(@RequestBody LineMemberIdRequest lineMemberIdRequest) {
 		var response = lineMemberService.getParticularLineMember(lineMemberIdRequest.getLineMemId());
 		return response;

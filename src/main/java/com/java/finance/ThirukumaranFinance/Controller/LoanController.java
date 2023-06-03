@@ -3,7 +3,6 @@ package com.java.finance.ThirukumaranFinance.Controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,13 +42,13 @@ public class LoanController {
 		return response;
 	}
 	
-	@GetMapping("/particular/loanNo")// fetch loan for given loan no and line Id
+	@PostMapping("/particular/loanNo")// fetch loan for given loan no and line Id
 	public Loan getParticularLoan(@RequestBody DeleteLoanRequest deleteLoanRequest) {
 		var response = loneService.getParticularLoan(deleteLoanRequest.getLineId(),deleteLoanRequest.getLoanNo());
 		return response;
 	}
 	
-	@GetMapping("/particular/date")// active loan for particular date
+	@PostMapping("/particular/date")// active loan for particular date
 	public List<Loan> getAllTodayLoan(@RequestBody DateCloseRequest request) {
 		var response = loneService.getAllTodayLoan(request.getLineId(),request.getDate());
 		return response;

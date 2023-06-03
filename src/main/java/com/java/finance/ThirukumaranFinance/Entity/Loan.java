@@ -51,16 +51,16 @@ public class Loan {
 	private LocalDate currentLoanDate;
 
 	@Column(name = "loan_amount")
-	private String loanAmount;
+	private int loanAmount;
 
 	@Column(name = "seetu_amount")
-	private String seetuAmount;
+	private int seetuAmount;
 
 	@Column(name = "commission_amount")
-	private String commissionAmount;
+	private int commissionAmount;
 
 	@Column(name = "interest")
-	private String interest;
+	private int interest;
 
 	@Column(name = "appx_loan_closed_date") // calculate and save it in DB from backend
 	private LocalDate appxLoanClosedDate;
@@ -69,14 +69,14 @@ public class Loan {
 	private LocalDate loanClosedDate;
 
 	@Column(name = "excess_amount") // have it as 0 while creating
-	private String excessAmount;
+	private int excessAmount;
 
 	@Column(name = "line_id")
 	private String lineId;
 
 	@Column(name = "balance") // while creating loan balance will be loan amount which further reduces on
 								// daily basis
-	private String balance;
+	private int balance;
 
 	@Column(name = "is_loan_active") // while creating it will be true by default which we update during loan close
 	private boolean isLoanActive;
@@ -86,8 +86,8 @@ public class Loan {
 									// false
 	private boolean dailyUpdate;
 	
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY) 
-    @JoinColumn(name ="loan_id")
-    private List<Dailycollection> dailyCollectionList;
+//	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY) 
+//    @JoinColumn(name ="loan_id")
+//    private List<Dailycollection> dailyCollectionList;
 
 }

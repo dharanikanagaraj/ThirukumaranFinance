@@ -43,7 +43,7 @@ public class LineController {
 		return response;
 	}
 	
-	@GetMapping("/particular/line")
+	@PostMapping("/particular/line")
 	public Line getParticularLine(@RequestBody LineIdRequest lineIdRequest) {
 		var response = lineService.getParticularLine(lineIdRequest.getLineId());
 		return response;

@@ -6,9 +6,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class LedgerResponse extends DailyCollectionData {
-	
-	private Map<String,String> date;
-	
+
+	private Map<String, String> date;
+
+	private int preBalance;
+
+	private int total;
+
 }

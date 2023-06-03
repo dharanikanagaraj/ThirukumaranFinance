@@ -30,14 +30,14 @@ public class LoneService {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 			LocalDate parsedDate = LocalDate.parse(loneRequest.getCurrentDate(), formatter);
 			loanDto.setCurrentLoanDate(parsedDate);
-			loanDto.setLoanAmount(loneRequest.getLoanAmount());
-			loanDto.setSeetuAmount(loneRequest.getSeetuAmount());
-			loanDto.setExcessAmount("0");
-			loanDto.setCommissionAmount(loneRequest.getCommissionAmount());
-			loanDto.setInterest(loneRequest.getInterest());
+			loanDto.setLoanAmount(Integer.parseInt(loneRequest.getLoanAmount()));
+			loanDto.setSeetuAmount(Integer.parseInt(loneRequest.getSeetuAmount()));
+			loanDto.setExcessAmount(0);
+			loanDto.setCommissionAmount(Integer.parseInt(loneRequest.getCommissionAmount()));
+			loanDto.setInterest(Integer.parseInt(loneRequest.getInterest()));
 			loanDto.setLineId(loneRequest.getLineId());
 			loanDto.setAppxLoanClosedDate(parsedDate.plusDays(100));
-			loanDto.setBalance(loneRequest.getLoanAmount());
+			loanDto.setBalance(Integer.parseInt(loneRequest.getLoanAmount()));
 			loanDto.setLoanActive(true);
 			loanDto.setDailyUpdate(false);
 			loneRepository.save(loanDto);
@@ -52,19 +52,19 @@ public class LoneService {
 	public String updateLone(LoanRequest loneRequest) {
 		try {
 			var loanDto = loneRepository.findByLoanNoAndLineId(loneRequest.getLineId(), loneRequest.getLoanNo());
-			if (!loanDto.getLoanAmount().equals(loneRequest.getLoanAmount())) {
+			if (loanDto.getLoanAmount() != Integer.parseInt((loneRequest.getLoanAmount()))) {
 				var addedLoanAmount = (Integer.parseInt(loneRequest.getLoanAmount()))
-						- (Integer.parseInt(loanDto.getLoanAmount()));
-				loanDto.setBalance(String.valueOf((Integer.parseInt(loanDto.getBalance())) + (addedLoanAmount)));
+						- (loanDto.getLoanAmount());
+				loanDto.setBalance(loanDto.getBalance() + addedLoanAmount);
 			}
 			loanDto.setName(loneRequest.getName());
 			loanDto.setAddress(loneRequest.getAddress());
 			loanDto.setPhoneNo(loneRequest.getPhoneNo());
 			loanDto.setOrderNo(loneRequest.getOrderNo());
-			loanDto.setLoanAmount(loneRequest.getLoanAmount());
-			loanDto.setSeetuAmount(loneRequest.getSeetuAmount());
-			loanDto.setCommissionAmount(loneRequest.getCommissionAmount());
-			loanDto.setInterest(loneRequest.getInterest());
+			loanDto.setLoanAmount(Integer.parseInt(loneRequest.getLoanAmount()));
+			loanDto.setSeetuAmount(Integer.parseInt(loneRequest.getSeetuAmount()));
+			loanDto.setCommissionAmount(Integer.parseInt(loneRequest.getCommissionAmount()));
+			loanDto.setInterest(Integer.parseInt(loneRequest.getInterest()));
 			loneRepository.save(loanDto);
 			return "Loan Updated Successfully";
 		} catch (Exception e) {
