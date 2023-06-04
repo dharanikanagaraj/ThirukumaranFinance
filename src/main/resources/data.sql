@@ -26,5 +26,5 @@ insert into date_close(id, date, line_id, created_on) values (3,'2023-05-25', 'L
 insert into date_close(id, date, line_id, created_on) values (4,'2023-05-23', 'Ln02', '2023-05-23');
 insert into date_close(id, date, line_id, created_on) values (5,'2023-05-24', 'Ln02', '2023-05-24');
 insert into date_close(id, date, line_id, created_on) values (6,'2023-05-25', 'Ln02', '2023-05-25');
---insert into line_member_details(id, linMem_id, phone_no, address, password, created_on, update_on, role) values (1,'Lm01', 'dharani', '13662', 'address', 'password' '2023-05-25', '2023-05-25');
---insert into line_member_details(id, linMem_id, phone_no, address, password, created_on, update_on, role) values (1,'Lm02', 'indira', '13662', 'address', 'password' '2023-05-25', '2023-05-25');
+--insert into line_member_details(id, lin_mem_id, phone_no, address, password, created_on, updated_on, role) values (1,'Lm01', 'dharani', '13662', 'address', 'password' '2023-05-25', '2023-05-25');
+--insert into line_member_details(id, lin_mem_id, phone_no, address, password, created_on, updated_on, role) values (1,'Lm02', 'indira', '13662', 'address', 'password' '2023-05-25', '2023-05-25');

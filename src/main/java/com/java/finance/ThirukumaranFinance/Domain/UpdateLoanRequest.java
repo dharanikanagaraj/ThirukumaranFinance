@@ -3,7 +3,9 @@ package com.java.finance.ThirukumaranFinance.Domain;
 import lombok.Data;
 
 @Data
-public class LoanRequest {
+public class UpdateLoanRequest {
+
+	private String loanNo;
 
 	private String userNo;
 	

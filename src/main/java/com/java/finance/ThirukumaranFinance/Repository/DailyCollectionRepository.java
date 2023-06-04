@@ -31,10 +31,10 @@ public interface DailyCollectionRepository extends JpaRepository<Dailycollection
 	@Query(value = "SELECT sum(amount_paid) FROM daily_amount_collection dc WHERE dc.line_id = :lineId and dc.date = :date", nativeQuery = true)
 	Integer getTotalAmountForAllCollection(@Param("lineId") String lineId, @Param("date") LocalDate date);
 
-	@Query(value = "SELECT * FROM daily_amount_collection dc WHERE dc.line_id = :lineId and dc.date >= :startDate and dc.date <= :endDate and dc.amount_paid=0", nativeQuery = true)
+	@Query(value = "SELECT * FROM daily_amount_collection dc WHERE dc.line_id = :lineId and dc.date >= :startDate and dc.date < :endDate and dc.amount_paid=0", nativeQuery = true)
 	List<Dailycollection> getNotPaidUser(@Param("lineId")String lineId, @Param("startDate")LocalDate startDate, @Param("endDate")LocalDate endDate);
 	
 	@Query(value = "SELECT * FROM daily_amount_collection dc WHERE dc.line_id = :lineId and dc.date >= :startDate and dc.date <= :endDate and dc.loan_id = :loanId order by created_on asc", nativeQuery = true)
 	List<Dailycollection> getAmountPaidForParticularDateRange(@Param("lineId")String lineId, @Param("startDate")LocalDate startDate, @Param("endDate")LocalDate endDate, @Param("loanId")int loanId);
-
+	
 }

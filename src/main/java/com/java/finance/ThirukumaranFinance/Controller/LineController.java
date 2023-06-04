@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.java.finance.ThirukumaranFinance.Domain.GenericResponse;
 import com.java.finance.ThirukumaranFinance.Domain.LineDto;
 import com.java.finance.ThirukumaranFinance.Domain.LineIdRequest;
 import com.java.finance.ThirukumaranFinance.Domain.LineRequest;
+import com.java.finance.ThirukumaranFinance.Domain.UpdateLineRequest;
 import com.java.finance.ThirukumaranFinance.Entity.Line;
 import com.java.finance.ThirukumaranFinance.Service.LineService;
 
@@ -26,19 +28,19 @@ public class LineController {
 	private final LineService lineService;
 
 	@PostMapping("/create")
-	public String createLine(@RequestBody LineRequest lineRequest) {
+	public GenericResponse createLine(@RequestBody LineRequest lineRequest) {
 		var response = lineService.createLine(lineRequest);
 		return response;
 	}
 
 	@PutMapping("/update")
-	public String updateLine(@RequestBody LineRequest lineRequest) {
+	public GenericResponse updateLine(@RequestBody UpdateLineRequest lineRequest) {
 		var response = lineService.updateLine(lineRequest);
 		return response;
 	}
 
 	@DeleteMapping("/delete")
-	public String deleteLine(@RequestBody LineIdRequest lineIdRequest) {
+	public GenericResponse deleteLine(@RequestBody LineIdRequest lineIdRequest) {
 		var response = lineService.deleteLine(lineIdRequest.getLineId());
 		return response;
 	}

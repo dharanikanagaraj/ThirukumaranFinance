@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.java.finance.ThirukumaranFinance.Domain.DateCloseRequest;
 import com.java.finance.ThirukumaranFinance.Domain.DeleteLoanRequest;
+import com.java.finance.ThirukumaranFinance.Domain.GenericResponse;
 import com.java.finance.ThirukumaranFinance.Domain.LoanRequest;
+import com.java.finance.ThirukumaranFinance.Domain.UpdateLoanRequest;
 import com.java.finance.ThirukumaranFinance.Entity.Loan;
 import com.java.finance.ThirukumaranFinance.Service.LoneService;
 
@@ -25,19 +27,19 @@ public class LoanController {
 	private final LoneService loneService;
 
 	@PostMapping("/create")
-	public String createLoan(@RequestBody LoanRequest loneRequest) {
+	public GenericResponse createLoan(@RequestBody LoanRequest loneRequest) {
 		var response = loneService.createLone(loneRequest);
 		return response;
 	}
 	
 	@PutMapping("/update")
-	public String updateLoan(@RequestBody LoanRequest loneRequest) {
+	public GenericResponse updateLoan(@RequestBody UpdateLoanRequest loneRequest) {
 		var response = loneService.updateLone(loneRequest);
 		return response;
 	}
 	
 	@DeleteMapping("/delete")
-	public String deleteLoan(@RequestBody DeleteLoanRequest deleteLoanRequest) {
+	public GenericResponse deleteLoan(@RequestBody DeleteLoanRequest deleteLoanRequest) {
 		var response = loneService.deleteLoan(deleteLoanRequest.getLineId(),deleteLoanRequest.getLoanNo());
 		return response;
 	}

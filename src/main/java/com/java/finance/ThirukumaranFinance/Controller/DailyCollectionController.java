@@ -13,6 +13,7 @@ import com.java.finance.ThirukumaranFinance.Domain.BillEntryResponse;
 import com.java.finance.ThirukumaranFinance.Domain.DailyCollectionData;
 import com.java.finance.ThirukumaranFinance.Domain.DailyCollectionRequest;
 import com.java.finance.ThirukumaranFinance.Domain.DateCloseRequest;
+import com.java.finance.ThirukumaranFinance.Domain.GenericResponse;
 import com.java.finance.ThirukumaranFinance.Domain.LedgerResponse;
 import com.java.finance.ThirukumaranFinance.Domain.LineIdRequest;
 import com.java.finance.ThirukumaranFinance.Domain.UpdateDailyCollectionRequest;
@@ -47,13 +48,13 @@ public class DailyCollectionController {
 	}
 	
 	@PostMapping("/create")
-	public String createDailyCollection(@RequestBody DailyCollectionRequest request) {
+	public GenericResponse createDailyCollection(@RequestBody DailyCollectionRequest request) {
 		var response = dailyCollectionService.createDailyCollection(request);
 		return response;
 	}
 	
 	@PutMapping("/update")
-	public String updateDailyCollection(@RequestBody UpdateDailyCollectionRequest request) {
+	public GenericResponse updateDailyCollection(@RequestBody UpdateDailyCollectionRequest request) {
 		var response = dailyCollectionService.updateDailyCollection(request);
 		return response;
 	}

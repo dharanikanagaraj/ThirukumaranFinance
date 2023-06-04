@@ -1,6 +1,6 @@
 package com.java.finance.ThirukumaranFinance.Domain;
 
-import java.util.Map;
+import java.util.List;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class LedgerResponse extends DailyCollectionData {
 
-	private Map<String, String> date;
+	private List<DateValue> dateValue;
 
 	private int preBalance;
 

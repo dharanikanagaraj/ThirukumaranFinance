@@ -31,7 +31,7 @@ public interface LoneRepository extends JpaRepository<Loan, Long> {
 	@Query(value = "SELECT ld.* FROM user_loan_details ld WHERE ld.line_id = :lineId AND ld.loan_closed_date = (SELECT MAX(ld2.loan_closed_date) FROM user_loan_details ld2 where ld2.user_no = ld.user_no) AND ld.user_no IN (SELECT user_no from user_loan_details  GROUP BY user_no HAVING COUNT(*) >0 AND COUNT(*) = SUM (CASE WHEN is_loan_active = false THEN 1 ELSE 0 END))", nativeQuery = true)
 	List<Loan> getAllClosedParty(@Param("lineId")String lineId);
 	
-	@Query(value = "SELECT DISTINCT user_no, name FROM user_loan_details ld WHERE ld.line_id = :lineId", nativeQuery = true)
+	@Query(value = "SELECT DISTINCT ON (user_no) * FROM USER_LOAN_DETAILS ld where ld.line_id=:lineId", nativeQuery = true)
 	List<Loan> getAllDistinctUser(@Param("lineId")String lineId);
 	
 	@Query(value = "SELECT * FROM user_loan_details ld WHERE ld.line_id = :lineId and ld.user_no =:userNo and ld.is_loan_active = false", nativeQuery = true)
@@ -49,4 +49,9 @@ public interface LoneRepository extends JpaRepository<Loan, Long> {
 	@Query(value = "SELECT * FROM user_loan_details ld WHERE ld.line_id = :lineId and ld.is_loan_active = true and ld.current_loan_date >= :startDate and ld.current_loan_date < :endDate", nativeQuery = true)
 	List<Loan> getLoanForLedger(@Param("lineId")String lineId, @Param("startDate")LocalDate startDate, @Param("endDate")LocalDate endDate);
 
+	@Query(value = "SELECT loan_no FROM USER_LOAN_DETAILS where line_id =:lineId ORDER BY loan_no DESC LIMIT 1", nativeQuery = true)
+	String findSequenceForLoan(@Param("lineId")String lineId);
+	
+	@Query(value = "SELECT user_no FROM USER_LOAN_DETAILS where line_id =:lineId ORDER BY user_no DESC LIMIT 1", nativeQuery = true)
+	String findSequenceForUser(@Param("lineId")String lineId);
 }

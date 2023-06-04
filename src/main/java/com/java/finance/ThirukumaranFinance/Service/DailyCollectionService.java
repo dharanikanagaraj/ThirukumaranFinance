@@ -4,9 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -14,6 +12,8 @@ import com.java.finance.ThirukumaranFinance.Domain.BillEntryResponse;
 import com.java.finance.ThirukumaranFinance.Domain.DailyCollectionData;
 import com.java.finance.ThirukumaranFinance.Domain.DailyCollectionRequest;
 import com.java.finance.ThirukumaranFinance.Domain.DateCloseRequest;
+import com.java.finance.ThirukumaranFinance.Domain.DateValue;
+import com.java.finance.ThirukumaranFinance.Domain.GenericResponse;
 import com.java.finance.ThirukumaranFinance.Domain.LedgerResponse;
 import com.java.finance.ThirukumaranFinance.Domain.UpdateDailyCollectionRequest;
 import com.java.finance.ThirukumaranFinance.Domain.UpdateDailyCollectionResponse;
@@ -67,20 +67,24 @@ public class DailyCollectionService {
 				var payamount = (loanData.get(i).getLoanAmount()) / 100;
 				dailyCollectionData.setPayAmount(String.valueOf(payamount));
 				var dailyCollection = dailyCollectionRepository.getAmountPaidForParticularDateRange(lineId, belowTenDaysDate, localDate, loanData.get(i).getLoanId());
-				Map<String, String> map = new HashMap<String, String>();
+				var dateList = new ArrayList<DateValue>();
 				if (!dailyCollection.isEmpty()) {
 					for (int j = 0; j < dailyCollection.size(); j++) {
-						map.put(dailyCollection.get(j).getDate().toString(), String.valueOf(dailyCollection.get(j).getAmountPaid()));
+						DateValue dateValue = new DateValue();
+						dateValue.setDate(dailyCollection.get(j).getDate());
+						dateValue.setAmount(dailyCollection.get(j).getAmountPaid());
+						dateList.add(dateValue);
 					}
 				}
-				dailyCollectionData.setDate(map);
+				dailyCollectionData.setDateValue(dateList);
 				response.add(dailyCollectionData);
 			}
 		}
 		return response;
 	}
 
-	public String createDailyCollection(DailyCollectionRequest request) {
+	public GenericResponse createDailyCollection(DailyCollectionRequest request) {
+		GenericResponse genericResponse = new GenericResponse();
 		try {
 			LocalDate localDate = LocalDate.now();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -112,11 +116,13 @@ public class DailyCollectionService {
 				dailyCollection.setLineId(request.getLineId());
 				dailyCollectionRepository.save(dailyCollection);
 			}
-			return "Daily Collection created successfully";
+			genericResponse.setMessage("Daily Collection created successfully");
+			return genericResponse;
 		} catch (Exception e) {
 			System.out.println("Exception is ::::" + e.getMessage());
 			e.printStackTrace();
-			return "Failed to create Daily Collection";
+			genericResponse.setMessage("Failed to create Daily Collection");
+			return genericResponse;
 		}
 	}
 
@@ -139,7 +145,8 @@ public class DailyCollectionService {
 		return response;
 	}
 
-	public String updateDailyCollection(UpdateDailyCollectionRequest request) {
+	public GenericResponse updateDailyCollection(UpdateDailyCollectionRequest request) {
+		GenericResponse genericResponse = new GenericResponse();
 		try {
 			LocalDate localDate = LocalDate.now();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -197,11 +204,13 @@ public class DailyCollectionService {
 					dailyCollectionRepository.save(dailyCollection);
 				}
 			}
-			return "Daily collection updated successfully";
+			genericResponse.setMessage("Daily collection updated successfully");
+			return genericResponse;
 		} catch (Exception e) {
 			System.out.println("Exception is ::::" + e.getMessage());
 			e.printStackTrace();
-			return "failed to update daily collection";
+			genericResponse.setMessage("failed to update daily collection");
+			return genericResponse;
 		}
 	}
 

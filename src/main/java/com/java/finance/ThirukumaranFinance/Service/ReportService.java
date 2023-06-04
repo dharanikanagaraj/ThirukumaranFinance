@@ -4,15 +4,17 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.java.finance.ThirukumaranFinance.Domain.BillNotPaidResponse;
 import com.java.finance.ThirukumaranFinance.Domain.BulkPaidResponse;
 import com.java.finance.ThirukumaranFinance.Domain.ClosedPartyResponse;
+import com.java.finance.ThirukumaranFinance.Domain.DateValue;
+import com.java.finance.ThirukumaranFinance.Domain.GenericResponse;
 import com.java.finance.ThirukumaranFinance.Domain.IndividualReportCollectionResponse;
 import com.java.finance.ThirukumaranFinance.Domain.IndividualReportLoanResponse;
 import com.java.finance.ThirukumaranFinance.Domain.LedgerResponse;
@@ -202,16 +204,19 @@ public class ReportService {
 		return response;
 	}
 
-	public String updateOrderNo(String lineId, String loanNo, String orderNo) {
+	public GenericResponse updateOrderNo(String lineId, String loanNo, String orderNo) {
+		GenericResponse genericResponse = new GenericResponse();
 		try {
 			var loanDto = loneRepository.findByLoanNoAndLineId(lineId, loanNo);
 			loanDto.setOrderNo(orderNo);
 			loneRepository.save(loanDto);
-			return "Order number updated Successfully";
+			genericResponse.setMessage("Order number updated Successfully");
+			return genericResponse;
 		} catch (Exception e) {
 			System.out.println("Exception is ::::" + e.getMessage());
 			e.printStackTrace();
-			return "Failed to update Order number";
+			genericResponse.setMessage("Failed to update Order number");
+			return genericResponse;
 		}
 	}
 
@@ -220,16 +225,22 @@ public class ReportService {
 
 		LocalDate endDate = LocalDate.now();
 		LocalDate startDate = endDate.minusDays(number);
-		var loanData = dailyCollectionRepository.getNotPaidUser(lineId, startDate, endDate);
+		var loanData = loneRepository.getAllActiveLoanForReport(lineId);
+		var dailyCollection = dailyCollectionRepository.getNotPaidUser(lineId, startDate, endDate);
+		Map<Loan, List<Dailycollection>> dailyCollectionList = dailyCollection.stream()
+				.collect(Collectors.groupingBy(Dailycollection::getLoan));
 		if (!loanData.isEmpty()) {
 			for (int i = 0; i < loanData.size(); i++) {
-				ClosedPartyResponse data = new ClosedPartyResponse();
-				data.setLoanNo(loanData.get(i).getLoan().getLoanNo());
-				data.setName(loanData.get(i).getLoan().getName());
-				data.setAddress(loanData.get(i).getLoan().getAddress());
-				data.setLoanAmount(loanData.get(i).getLoan().getLoanAmount());
-				data.setDate(loanData.get(i).getLoan().getCurrentLoanDate().toString());
-				response.add(data);
+				var list = dailyCollectionList.get(loanData.get(i));
+				if (list != null && list.size() == number) {
+					ClosedPartyResponse data = new ClosedPartyResponse();
+					data.setLoanNo(loanData.get(i).getLoanNo());
+					data.setName(loanData.get(i).getName());
+					data.setAddress(loanData.get(i).getAddress());
+					data.setLoanAmount(loanData.get(i).getLoanAmount());
+					data.setDate(loanData.get(i).getCurrentLoanDate().toString());
+					response.add(data);
+				}
 			}
 		}
 		return response;
@@ -250,14 +261,16 @@ public class ReportService {
 				ledgerResponse.setBalance(loanData.get(i).getBalance());
 				var dailyCollection = dailyCollectionRepository.getAmountPaidForParticularDateRange(lineId,
 						startParsedDate, endParsedDate, loanData.get(i).getLoanId());
-				Map<String, String> map = new HashMap<String, String>();
+				var dateList = new ArrayList<DateValue>();
 				if (!dailyCollection.isEmpty()) {
 					for (int j = 0; j < dailyCollection.size(); j++) {
-						map.put(dailyCollection.get(j).getDate().toString(),
-								String.valueOf(dailyCollection.get(j).getAmountPaid()));
+						DateValue dateValue = new DateValue();
+						dateValue.setDate(dailyCollection.get(j).getDate());
+						dateValue.setAmount(dailyCollection.get(j).getAmountPaid());
+						dateList.add(dateValue);
 					}
 				}
-				ledgerResponse.setDate(map);
+				ledgerResponse.setDateValue(dateList);
 				int sum = dailyCollection.stream().mapToInt(Dailycollection::getAmountPaid).sum();
 				ledgerResponse.setTotal(sum);
 				ledgerResponse.setPreBalance(loanData.get(i).getBalance() + sum);
@@ -299,7 +312,8 @@ public class ReportService {
 		if (!loanData.isEmpty()) {
 			for (int i = 0; i < loanData.size(); i++) {
 				var dailyCollection = dailyCollectionRepository.getAllByLoanIdInDesc(loanData.get(i).getLoanId());
-				if (!dailyCollection.isEmpty() &&dailyCollection.get(0).getAmountPaid() >= loanData.get(i).getLoanAmount() / 2) {
+				if (!dailyCollection.isEmpty()
+						&& dailyCollection.get(0).getAmountPaid() >= loanData.get(i).getLoanAmount() / 2) {
 					BulkPaidResponse bulkPaidResponse = new BulkPaidResponse();
 					bulkPaidResponse.setLoanNo(loanData.get(i).getLoanNo());
 					bulkPaidResponse.setName(loanData.get(i).getName());
@@ -359,8 +373,8 @@ public class ReportService {
 			startParsedDate = LocalDate.now().minusDays(6);
 			loanReponse = loneRepository.getNipLoanList(lineId, startParsedDate);
 		}
-		totalLedgerResponse.setLoanCount(loanReponse.size());
 		if (!loanReponse.isEmpty()) {
+			totalLedgerResponse.setLoanCount(loanReponse.size());
 			for (int i = 0; i < loanReponse.size(); i++) {
 				NipResponse nipResponse = new NipResponse();
 				nipResponse.setLoanNo(loanReponse.get(i).getLoanNo());

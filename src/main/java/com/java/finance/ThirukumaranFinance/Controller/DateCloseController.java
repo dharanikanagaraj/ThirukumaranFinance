@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.java.finance.ThirukumaranFinance.Domain.DateCloseRequest;
+import com.java.finance.ThirukumaranFinance.Domain.GenericResponse;
 import com.java.finance.ThirukumaranFinance.Domain.LineIdRequest;
 import com.java.finance.ThirukumaranFinance.Entity.DateClose;
 import com.java.finance.ThirukumaranFinance.Service.DateCloseService;
@@ -22,7 +23,7 @@ public class DateCloseController {
 	private final DateCloseService dateCloseService;
 
 	@PostMapping("/create")
-	public String createDateClose(@RequestBody DateCloseRequest dateCloseRequest) {
+	public GenericResponse createDateClose(@RequestBody DateCloseRequest dateCloseRequest) {
 		var response = dateCloseService.createDateClose(dateCloseRequest);
 		return response;
 	}

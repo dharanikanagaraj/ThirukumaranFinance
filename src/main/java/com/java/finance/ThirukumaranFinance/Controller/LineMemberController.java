@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.java.finance.ThirukumaranFinance.Domain.GenericResponse;
 import com.java.finance.ThirukumaranFinance.Domain.LineMemberIdRequest;
 import com.java.finance.ThirukumaranFinance.Domain.LineMemberRequest;
+import com.java.finance.ThirukumaranFinance.Domain.UpdateLineMemberRequest;
 import com.java.finance.ThirukumaranFinance.Entity.LineMember;
 import com.java.finance.ThirukumaranFinance.Service.LineMemberService;
 
@@ -25,19 +27,19 @@ public class LineMemberController {
 	private final LineMemberService lineMemberService;
 
 	@PostMapping("/create")
-	public String createLineMember(@RequestBody LineMemberRequest lineMemberRequest) {
+	public GenericResponse createLineMember(@RequestBody LineMemberRequest lineMemberRequest) {
 		var response = lineMemberService.createLineMember(lineMemberRequest);
 		return response;
 	}
 
 	@PutMapping("/update")
-	public String updateLineMember(@RequestBody LineMemberRequest lineMemberRequest) {
+	public GenericResponse updateLineMember(@RequestBody UpdateLineMemberRequest lineMemberRequest) {
 		var response = lineMemberService.updateLineMember(lineMemberRequest);
 		return response;
 	}
 
 	@DeleteMapping("/delete")
-	public String deleteLineMember(@RequestBody LineMemberIdRequest lineMemberIdRequest) {
+	public GenericResponse deleteLineMember(@RequestBody LineMemberIdRequest lineMemberIdRequest) {
 		var response = lineMemberService.deleteLineMember(lineMemberIdRequest.getLineMemId());
 		return response;
 	}

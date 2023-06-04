@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.java.finance.ThirukumaranFinance.Domain.GenericResponse;
 import com.java.finance.ThirukumaranFinance.Domain.LineMemberRequest;
+import com.java.finance.ThirukumaranFinance.Domain.UpdateLineMemberRequest;
 import com.java.finance.ThirukumaranFinance.Entity.LineMember;
 import com.java.finance.ThirukumaranFinance.Repository.LineMemberRepository;
 
@@ -17,10 +19,11 @@ public class LineMemberService {
 
 	private final LineMemberRepository lineMemberRepository;
 
-	public String createLineMember(LineMemberRequest lineMemberRequest) {
+	public GenericResponse createLineMember(LineMemberRequest lineMemberRequest) {
+		GenericResponse genericResponse = new GenericResponse();
 		try {
 			var lineMemberDto = new LineMember();
-			lineMemberDto.setLinMemId(lineMemberRequest.getLineMemId());
+			lineMemberDto.setLinMemId(getLatestSequenceForLineMember());
 			lineMemberDto.setMemberName(lineMemberRequest.getMemberName());
 			lineMemberDto.setAddress(lineMemberRequest.getAddress());
 			lineMemberDto.setPhoneNo(lineMemberRequest.getPhoneNo());
@@ -29,13 +32,16 @@ public class LineMemberService {
 			lineMemberDto.setUpdatedOn(LocalDate.now());
 			lineMemberDto.setRole("LineMan");
 			lineMemberRepository.save(lineMemberDto);
-			return "Line Member created Successfully";
+			genericResponse.setMessage("Line Member created Successfully");
+			return genericResponse;
 		} catch (Exception e) {
-			return "Failed to create line member";
+			genericResponse.setMessage("Failed to create line member");
+			return genericResponse;
 		}
 	}
 
-	public String updateLineMember(LineMemberRequest lineMemberRequest) {
+	public GenericResponse updateLineMember(UpdateLineMemberRequest lineMemberRequest) {
+		GenericResponse genericResponse = new GenericResponse();
 		try {
 			var entity = lineMemberRepository.findByLinMemId(lineMemberRequest.getLineMemId()); // lineMemId should not
 																								// be editable
@@ -46,19 +52,24 @@ public class LineMemberService {
 			entity.setUpdatedOn(LocalDate.now());
 			entity.setRole("LineMan");
 			lineMemberRepository.save(entity);
-			return "Line Member Updated Successfully";
+			genericResponse.setMessage("Line Member Updated Successfully");
+			return genericResponse;
 		} catch (Exception e) {
-			return "Failed to update line member";
+			genericResponse.setMessage("Failed to update line member");
+			return genericResponse;
 		}
 	}
 
-	public String deleteLineMember(String lineMemId) {
+	public GenericResponse deleteLineMember(String lineMemId) {
+		GenericResponse genericResponse = new GenericResponse();
 		try {
 			var entity = lineMemberRepository.findByLinMemId(lineMemId);
 			lineMemberRepository.delete(entity);
-			return "Line Member deleted Successfully";
+			genericResponse.setMessage("Line Member deleted Successfully");
+			return genericResponse;
 		} catch (Exception e) {
-			return "Failed to delete line member";
+			genericResponse.setMessage("Failed to delete line member");
+			return genericResponse;
 		}
 	}
 
@@ -69,6 +80,23 @@ public class LineMemberService {
 
 	public LineMember getParticularLineMember(String lineMemId) {
 		return lineMemberRepository.findByLinMemId(lineMemId);
+	}
+
+	public String getLatestSequenceForLineMember() {
+		String newValue;
+		String originalValue = lineMemberRepository.findSequence();
+		if (originalValue != null && !originalValue.isBlank()) {
+			// Extract the numeric part of the string
+			String numericPart = originalValue.substring(2);
+			// Convert the numeric part to an integer and increment by one
+			int incrementedValue = Integer.parseInt(numericPart) + 1;
+			// Combine the original prefix with the incremented value
+			 newValue = originalValue.substring(0, 2) + String.format("%02d", incrementedValue);
+			System.out.println("Incremented value: " + newValue);
+		} else {
+			 newValue = "Lm01";
+		}
+		return newValue;
 	}
 
 }

@@ -15,6 +15,7 @@ import com.java.finance.ThirukumaranFinance.Domain.ContinuouslyNotPaidRequest;
 import com.java.finance.ThirukumaranFinance.Domain.DateCloseRequest;
 import com.java.finance.ThirukumaranFinance.Domain.DateRequest;
 import com.java.finance.ThirukumaranFinance.Domain.DeleteLoanRequest;
+import com.java.finance.ThirukumaranFinance.Domain.GenericResponse;
 import com.java.finance.ThirukumaranFinance.Domain.IndividualReportCollectionResponse;
 import com.java.finance.ThirukumaranFinance.Domain.IndividualReportLoanResponse;
 import com.java.finance.ThirukumaranFinance.Domain.LedgerResponse;
@@ -93,7 +94,7 @@ public class ReportsController {
 	}
     
     @PutMapping("/update/orderNo")
-    public String updateOrderNo(@RequestBody UpdateOrderRequest request) {
+    public GenericResponse updateOrderNo(@RequestBody UpdateOrderRequest request) {
 		var response = reportService.updateOrderNo(request.getLineId(),request.getLoanNo(),request.getOrderNo());
 		return response;
 	}

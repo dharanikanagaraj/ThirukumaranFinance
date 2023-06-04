@@ -20,7 +20,7 @@ public class LineMember {
 	@GeneratedValue
 	private Long id;
 	
-	@Column(name = "linMem_id")
+	@Column(name = "lin_Mem_id")
 	private String linMemId; // sent from UI which should be next and next in serial order (eg:Lm01)
 	
 	@Column(name = "member_name")
