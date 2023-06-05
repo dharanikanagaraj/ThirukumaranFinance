@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import com.java.finance.ThirukumaranFinance.Entity.Loan;
 
+import jakarta.persistence.Tuple;
+
 @Repository
 public interface LoneRepository extends JpaRepository<Loan, Long> {
 
@@ -54,4 +56,17 @@ public interface LoneRepository extends JpaRepository<Loan, Long> {
 	
 	@Query(value = "SELECT user_no FROM USER_LOAN_DETAILS where line_id =:lineId ORDER BY user_no DESC LIMIT 1", nativeQuery = true)
 	String findSequenceForUser(@Param("lineId")String lineId);
+	
+	@Query(value = "SELECT sum(loan_amount) as loanTotal, sum(commission_amount) as commissionTotal, sum(seetu_amount) as seetuTotal, sum(excess_amount) as excessTotal FROM USER_LOAN_DETAILS dc WHERE dc.line_id = :lineId and dc.current_loan_date = :date", nativeQuery = true)
+	List<Tuple> getTotalBalanceForThittam(@Param("lineId") String lineId, @Param("date") LocalDate date);
+	
+	@Query(value = "SELECT COUNT(*) AS loan_count, SUM(balance) AS total_balance FROM user_loan_details ld WHERE ld.line_id = :lineId and ld.is_loan_active = true and ld.current_loan_date >= :startDate and ld.current_loan_date < :endDate", nativeQuery = true)
+	List<Tuple> getOutstandingBalanceForDateRange(@Param("lineId")String lineId, @Param("startDate")LocalDate startDate, @Param("endDate")LocalDate endDate);
+
+	@Query(value = "SELECT COUNT(*) AS loan_count, SUM(balance) AS total_balance FROM user_loan_details ld WHERE ld.line_id = :lineId and ld.is_loan_active = true and ld.current_loan_date < :startDate", nativeQuery = true)
+	List<Tuple> getOutstandingBalanceForParticularDate(@Param("lineId")String lineId, @Param("startDate")LocalDate startDate);
+	
+	@Query(value = "SELECT sum(excess_amount) as excessTotal FROM user_loan_details ld WHERE ld.line_id = :lineId and ld.is_loan_active = false and ld.loan_closed_date = :date", nativeQuery = true)
+	List<Tuple> getExcessAmountForDate(@Param("lineId")String lineId, @Param("date")LocalDate date);
+
 }

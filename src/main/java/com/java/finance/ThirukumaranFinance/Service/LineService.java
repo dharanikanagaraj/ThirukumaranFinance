@@ -55,6 +55,8 @@ public class LineService {
 			genericResponse.setMessage("Line Updated Successfully");
 			return genericResponse;
 		} catch (Exception e) {
+			System.out.println("Exception is ::::" + e.getMessage());
+			e.printStackTrace();
 			genericResponse.setMessage("Failed to update line");
 			return genericResponse;
 		}
@@ -68,6 +70,8 @@ public class LineService {
 			genericResponse.setMessage("Line deleted Successfully");
 			return genericResponse;
 		} catch (Exception e) {
+			System.out.println("Exception is ::::" + e.getMessage());
+			e.printStackTrace();
 			genericResponse.setMessage("Failed to delete line");
 			return genericResponse;
 		}

@@ -295,7 +295,7 @@ public class ReportService {
 				nipResponse.setLoanAmount(loanData.get(i).getLoanAmount());
 				nipResponse.setPaidAmount(loanData.get(i).getLoanAmount() - loanData.get(i).getBalance());
 				nipResponse.setBalance(loanData.get(i).getBalance());
-				var days = ChronoUnit.DAYS.between(startDate, LocalDate.now());
+				var days = ChronoUnit.DAYS.between(loanData.get(i).getCurrentLoanDate(), LocalDate.now());
 				nipResponse.setPayDayss(days);
 				response.add(nipResponse);
 			}
@@ -332,8 +332,8 @@ public class ReportService {
 		TotalLedgerResponse totalLedgerResponse = new TotalLedgerResponse();
 		var loanList = new ArrayList<NipResponse>();
 		var loanReponse = loneRepository.getAllActiveLoanForReport(lineId);
-		totalLedgerResponse.setLoanCount(loanReponse.size());
 		if (!loanReponse.isEmpty()) {
+			totalLedgerResponse.setLoanCount(loanReponse.size());
 			for (int i = 0; i < loanReponse.size(); i++) {
 				NipResponse nipResponse = new NipResponse();
 				nipResponse.setLoanNo(loanReponse.get(i).getLoanNo());

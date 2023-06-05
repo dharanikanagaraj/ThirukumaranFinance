@@ -35,6 +35,8 @@ public class LineMemberService {
 			genericResponse.setMessage("Line Member created Successfully");
 			return genericResponse;
 		} catch (Exception e) {
+			System.out.println("Exception is ::::" + e.getMessage());
+			e.printStackTrace();
 			genericResponse.setMessage("Failed to create line member");
 			return genericResponse;
 		}
@@ -55,6 +57,8 @@ public class LineMemberService {
 			genericResponse.setMessage("Line Member Updated Successfully");
 			return genericResponse;
 		} catch (Exception e) {
+			System.out.println("Exception is ::::" + e.getMessage());
+			e.printStackTrace();
 			genericResponse.setMessage("Failed to update line member");
 			return genericResponse;
 		}
@@ -68,6 +72,8 @@ public class LineMemberService {
 			genericResponse.setMessage("Line Member deleted Successfully");
 			return genericResponse;
 		} catch (Exception e) {
+			System.out.println("Exception is ::::" + e.getMessage());
+			e.printStackTrace();
 			genericResponse.setMessage("Failed to delete line member");
 			return genericResponse;
 		}

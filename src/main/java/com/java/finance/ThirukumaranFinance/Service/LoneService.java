@@ -100,6 +100,8 @@ public class LoneService {
 			genericResponse.setMessage("Loan deleted Successfully");
 			return genericResponse;
 		} catch (Exception e) {
+			System.out.println("Exception is ::::" + e.getMessage());
+			e.printStackTrace();
 			genericResponse.setMessage("Failed to delete Loan");
 			return genericResponse;
 		}
