@@ -4,9 +4,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
+import com.java.finance.ThirukumaranFinance.Domain.BalanceData;
 import com.java.finance.ThirukumaranFinance.Domain.BalanceRequest;
 import com.java.finance.ThirukumaranFinance.Domain.DateRequest;
 import com.java.finance.ThirukumaranFinance.Domain.GenericResponse;
@@ -21,6 +23,7 @@ import com.java.finance.ThirukumaranFinance.Repository.HeadRepository;
 import com.java.finance.ThirukumaranFinance.Repository.OutStandingBalanceRepository;
 import com.java.finance.ThirukumaranFinance.Repository.ThittamDataRepository;
 
+import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -221,6 +224,114 @@ public class ThittamService {
 		LocalDate endDate = LocalDate.parse(request.getEndDate(), formatter);
 		var response = thittamDataRepository.getIndividualData(request.getName(), startDate, endDate);
 		return response;
+	}
+
+	public List<BalanceData> getAlldataforBalanceSheet(DateRequest request) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		LocalDate startDate = LocalDate.parse(request.getStartDate(), formatter);
+		LocalDate endDate = LocalDate.parse(request.getEndDate(), formatter);
+		var tupleList = thittamDataRepository.getBalanceSheet(startDate, endDate);
+		var balanceDataList = getBalanceDataList(tupleList);
+		for (int i = balanceDataList.size() - 1; i >= 0; i--) {
+			var data = balanceDataList.get(i);
+			if (data.getName().contains("LOAN") || data.getName().contains("BILL")
+					|| data.getName().contains("COMMISSION") || data.getName().contains("SEETU")
+					|| data.getName().contains("EXCESS") || data.getName().contains("Balance")) {
+				balanceDataList.remove(i);
+			}
+		}
+		var entity = thittamDataRepository.findByNameAndDateForBalance("Balance", startDate.minusDays(1));
+		var openingBalance = getOpeningBalance(entity);
+		balanceDataList.add(openingBalance);
+		var loan = thittamDataRepository.getLoanDataWithDate(startDate, endDate);
+		var loanBalance = getDefaultColumnBalance(loan, "Loan");
+		balanceDataList.add(loanBalance);
+		var seetu = thittamDataRepository.getSeetuDataWithDate(startDate, endDate);
+		var seetuBalance = getDefaultColumnBalance(seetu, "Seetu");
+		balanceDataList.add(seetuBalance);
+		var excessBalance = thittamDataRepository.getExcessDataWithDate(startDate, endDate);
+		var excess = getDefaultColumnBalance(excessBalance, "Excess");
+		balanceDataList.add(excess);
+		var commission = thittamDataRepository.getCommissionDataWithDate(startDate, endDate);
+		var commissonBalance = getDefaultColumnBalance(commission, "Commission");
+		balanceDataList.add(commissonBalance);
+		var bill = thittamDataRepository.getCommissionDataWithDate(startDate, endDate);
+		var billBalance = getDefaultColumnBalance(bill, "Vasul Varavu");
+		balanceDataList.add(billBalance);
+		return balanceDataList;
+	}
+
+	private BalanceData getOpeningBalance(ThittamData entity) {
+		BalanceData balanceData = new BalanceData();
+		balanceData.setName("Opening Balance");
+		balanceData.setCredit(entity.getBalance());
+		balanceData.setDebit(0);
+		return balanceData;
+	}
+
+	private List<BalanceData> getBalanceDataList(List<Tuple> tuplelist) {
+		var balanceDataList = new ArrayList<BalanceData>();
+		if (!tuplelist.isEmpty()) {
+			for (Tuple tuple : tuplelist) {
+				BalanceData balanceData = new BalanceData();
+				balanceData.setCredit(tocheckNull(tuple.get("TotalCredit", Long.class)));
+				balanceData.setDebit(tocheckNull(tuple.get("TotalDebit", Long.class)));
+				balanceData.setName(tocheckNullString(tuple.get("name", String.class)));
+				balanceDataList.add(balanceData);
+			}
+		}
+		return balanceDataList;
+	}
+
+	private BalanceData getDefaultColumnBalance(List<Tuple> tuplelist, String name) {
+		BalanceData balanceData = new BalanceData();
+		if (!tuplelist.isEmpty()) {
+			Tuple tuple = tuplelist.get(0);
+			balanceData.setCredit(tocheckNull(tuple.get("TotalCredit", Long.class)));
+			balanceData.setDebit(tocheckNull(tuple.get("TotalDebit", Long.class)));
+			balanceData.setName(name);
+		}
+		return balanceData;
+	}
+
+	public int tocheckNull(Object value) {
+		return Objects.isNull(value) ? 0 : ((Long) value).intValue();
+	}
+
+	public String tocheckNullString(Object value) {
+		return Objects.isNull(value) ? null : (value).toString();
+	}
+
+	public List<BalanceData> getAlldataforTrailSheet() {
+		var tupleList = thittamDataRepository.getTrialSheet();
+		var balanceDataList = getBalanceDataList(tupleList);
+		for (int i = balanceDataList.size() - 1; i >= 0; i--) {
+			var data = balanceDataList.get(i);
+			if (data.getName().contains("LOAN") || data.getName().contains("BILL")
+					|| data.getName().contains("COMMISSION") || data.getName().contains("SEETU")
+					|| data.getName().contains("EXCESS") || data.getName().contains("Balance")) {
+				balanceDataList.remove(i);
+			}
+		}
+		var entity = thittamDataRepository.findByName();
+		var openingBalance = getOpeningBalance(entity);
+		balanceDataList.add(openingBalance);
+		var loan = thittamDataRepository.getLoanData();
+		var loanBalance = getDefaultColumnBalance(loan, "Loan");
+		balanceDataList.add(loanBalance);
+		var seetu = thittamDataRepository.getSeetuData();
+		var seetuBalance = getDefaultColumnBalance(seetu, "Seetu");
+		balanceDataList.add(seetuBalance);
+		var excessBalance = thittamDataRepository.getExcessData();
+		var excess = getDefaultColumnBalance(excessBalance, "Excess");
+		balanceDataList.add(excess);
+		var commission = thittamDataRepository.getCommissionData();
+		var commissonBalance = getDefaultColumnBalance(commission, "Commission");
+		balanceDataList.add(commissonBalance);
+		var bill = thittamDataRepository.getBillData();
+		var billBalance = getDefaultColumnBalance(bill, "Vasul Varavu");
+		balanceDataList.add(billBalance);
+		return balanceDataList;
 	}
 
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.java.finance.ThirukumaranFinance.Domain.BalanceData;
 import com.java.finance.ThirukumaranFinance.Domain.BalanceRequest;
 import com.java.finance.ThirukumaranFinance.Domain.DateRequest;
 import com.java.finance.ThirukumaranFinance.Domain.GenericResponse;
@@ -102,6 +103,18 @@ public class ThittamController {
 	@PostMapping("/individualhead")
 	public List<ThittamData> getAllIndividualHeadData(@RequestBody IndividualHeadRequest request) {
 		var response = thittamService.getAllIndividualHeadData(request);
+		return response;
+	}
+	
+	@PostMapping("/balanceSheet")
+	public List<BalanceData> getAlldataforBalanceSheet(@RequestBody DateRequest request) {
+		var response = thittamService.getAlldataforBalanceSheet(request);
+		return response;
+	}
+	
+	@GetMapping("/trialSheet")
+	public List<BalanceData> getAlldataforTrialSheet() {
+		var response = thittamService.getAlldataforTrailSheet();
 		return response;
 	}
 
