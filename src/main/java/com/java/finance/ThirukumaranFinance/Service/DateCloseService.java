@@ -1,6 +1,7 @@
 package com.java.finance.ThirukumaranFinance.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
@@ -47,11 +48,11 @@ public class DateCloseService {
 	public GenericResponse createDateClose(DateCloseRequest dateCloseRequest) {
 		GenericResponse genericResponse = new GenericResponse();
 		try {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDate parsedDate = LocalDate.parse(dateCloseRequest.getDate(), formatter);
 			var date = dateCloseRepository.findByDate(dateCloseRequest.getLineId(), parsedDate);
 			var dateClose = new DateClose();
-			dateClose.setCreatedOn(LocalDate.now());
+			dateClose.setCreatedOn(LocalDateTime.now());
 			dateClose.setLineId(dateCloseRequest.getLineId());
 			dateClose.setDate(parsedDate);
 			dateCloseRepository.save(dateClose);

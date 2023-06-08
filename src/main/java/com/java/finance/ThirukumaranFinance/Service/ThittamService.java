@@ -87,7 +87,7 @@ public class ThittamService {
 			entity.setDescription(request.getDescription());
 			entity.setCredit(request.getCredit());
 			entity.setDebit(request.getDebit());
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDate parsedDate = LocalDate.parse(request.getDate(), formatter);
 			entity.setDate(parsedDate);
 			entity.setExtraHead(true);
@@ -104,7 +104,7 @@ public class ThittamService {
 
 	public List<HeadDataRequest> getThittamDataForExtraHead(ThittamDateRequest request) {
 		var response = new ArrayList<HeadDataRequest>();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate date = LocalDate.parse(request.getDate(), formatter);
 		var data = thittamDataRepository.findThittamDataforExtraHead(date);
 		if (!data.isEmpty()) {
@@ -124,7 +124,7 @@ public class ThittamService {
 	public GenericResponse deleteHeadData(String name, String date) {
 		GenericResponse genericResponse = new GenericResponse();
 		try {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDate parsedDate = LocalDate.parse(date, formatter);
 			var entity = thittamDataRepository.findByNameAndDate(name, parsedDate);
 			thittamDataRepository.deleteAll(entity);
@@ -147,7 +147,7 @@ public class ThittamService {
 			if (request.getName().equalsIgnoreCase("Closing Balance")) {
 				entity.setExtraHead(true);
 			}
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDate parsedDate = LocalDate.parse(request.getDate(), formatter);
 			entity.setDate(parsedDate);
 			thittamDataRepository.save(entity);
@@ -164,7 +164,7 @@ public class ThittamService {
 	public GenericResponse deleteAllExtraHeadForDate(String date) {
 		GenericResponse genericResponse = new GenericResponse();
 		try {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDate parsedDate = LocalDate.parse(date, formatter);
 			var data = thittamDataRepository.findThittamDataforExtraHead(parsedDate);
 			thittamDataRepository.deleteAll(data);
@@ -180,7 +180,7 @@ public class ThittamService {
 
 	public ThittamResponse getAllThittamData(ThittamDateRequest request) {
 		ThittamResponse thittamResponse = new ThittamResponse();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate parsedDate = LocalDate.parse(request.getDate(), formatter);
 		var entity = thittamDataRepository.findByNameAndDateForBalance("Balance", parsedDate.minusDays(1));
 		if (entity != null) {
@@ -204,14 +204,14 @@ public class ThittamService {
 	}
 
 	public List<OutStandingBalance> getAllOutStandingBalance(String date) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate parsedDate = LocalDate.parse(date, formatter);
 		var response = outStandingBalanceRepository.getOutStandingBalanceForDate(parsedDate);
 		return response;
 	}
 
 	public List<ThittamData> getAllAccountData(DateRequest request) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate startDate = LocalDate.parse(request.getStartDate(), formatter);
 		LocalDate endDate = LocalDate.parse(request.getEndDate(), formatter);
 		var response = thittamDataRepository.getAccountData(startDate, endDate);
@@ -219,7 +219,7 @@ public class ThittamService {
 	}
 
 	public List<ThittamData> getAllIndividualHeadData(IndividualHeadRequest request) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate startDate = LocalDate.parse(request.getStartDate(), formatter);
 		LocalDate endDate = LocalDate.parse(request.getEndDate(), formatter);
 		var response = thittamDataRepository.getIndividualData(request.getName(), startDate, endDate);
@@ -227,22 +227,19 @@ public class ThittamService {
 	}
 
 	public List<BalanceData> getAlldataforBalanceSheet(DateRequest request) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate startDate = LocalDate.parse(request.getStartDate(), formatter);
 		LocalDate endDate = LocalDate.parse(request.getEndDate(), formatter);
-		var tupleList = thittamDataRepository.getBalanceSheet(startDate, endDate);
-		var balanceDataList = getBalanceDataList(tupleList);
-		for (int i = balanceDataList.size() - 1; i >= 0; i--) {
-			var data = balanceDataList.get(i);
-			if (data.getName().contains("LOAN") || data.getName().contains("BILL")
-					|| data.getName().contains("COMMISSION") || data.getName().contains("SEETU")
-					|| data.getName().contains("EXCESS") || data.getName().contains("Balance")) {
-				balanceDataList.remove(i);
-			}
-		}
+		var balanceDataList = new ArrayList<BalanceData>();
 		var entity = thittamDataRepository.findByNameAndDateForBalance("Balance", startDate.minusDays(1));
 		var openingBalance = getOpeningBalance(entity);
 		balanceDataList.add(openingBalance);
+		var bill = thittamDataRepository.getBillDataWithDate(startDate, endDate);
+		var billBalance = getDefaultColumnBalance(bill, "Vasul Varavu");
+		balanceDataList.add(billBalance);
+		var commission = thittamDataRepository.getCommissionDataWithDate(startDate, endDate);
+		var commissonBalance = getDefaultColumnBalance(commission, "Commission");
+		balanceDataList.add(commissonBalance);
 		var loan = thittamDataRepository.getLoanDataWithDate(startDate, endDate);
 		var loanBalance = getDefaultColumnBalance(loan, "Loan");
 		balanceDataList.add(loanBalance);
@@ -252,12 +249,17 @@ public class ThittamService {
 		var excessBalance = thittamDataRepository.getExcessDataWithDate(startDate, endDate);
 		var excess = getDefaultColumnBalance(excessBalance, "Excess");
 		balanceDataList.add(excess);
-		var commission = thittamDataRepository.getCommissionDataWithDate(startDate, endDate);
-		var commissonBalance = getDefaultColumnBalance(commission, "Commission");
-		balanceDataList.add(commissonBalance);
-		var bill = thittamDataRepository.getCommissionDataWithDate(startDate, endDate);
-		var billBalance = getDefaultColumnBalance(bill, "Vasul Varavu");
-		balanceDataList.add(billBalance);
+		var tupleList = thittamDataRepository.getBalanceSheet(startDate, endDate);
+		var allDatalist = getBalanceDataList(tupleList);
+		for (int i = allDatalist.size() - 1; i >= 0; i--) {
+			var data = allDatalist.get(i);
+			if (data.getName().contains("LOAN") || data.getName().contains("BILL")
+					|| data.getName().contains("COMMISSION") || data.getName().contains("SEETU")
+					|| data.getName().contains("EXCESS") || data.getName().contains("Balance")) {
+				allDatalist.remove(i);
+			}
+		}
+		balanceDataList.addAll(allDatalist);
 		return balanceDataList;
 	}
 
@@ -303,19 +305,16 @@ public class ThittamService {
 	}
 
 	public List<BalanceData> getAlldataforTrailSheet() {
-		var tupleList = thittamDataRepository.getTrialSheet();
-		var balanceDataList = getBalanceDataList(tupleList);
-		for (int i = balanceDataList.size() - 1; i >= 0; i--) {
-			var data = balanceDataList.get(i);
-			if (data.getName().contains("LOAN") || data.getName().contains("BILL")
-					|| data.getName().contains("COMMISSION") || data.getName().contains("SEETU")
-					|| data.getName().contains("EXCESS") || data.getName().contains("Balance")) {
-				balanceDataList.remove(i);
-			}
-		}
+		var balanceDataList = new ArrayList<BalanceData>();
 		var entity = thittamDataRepository.findByName();
 		var openingBalance = getOpeningBalance(entity);
 		balanceDataList.add(openingBalance);
+		var bill = thittamDataRepository.getBillData();
+		var billBalance = getDefaultColumnBalance(bill, "Vasul Varavu");
+		balanceDataList.add(billBalance);
+		var commission = thittamDataRepository.getCommissionData();
+		var commissonBalance = getDefaultColumnBalance(commission, "Commission");
+		balanceDataList.add(commissonBalance);
 		var loan = thittamDataRepository.getLoanData();
 		var loanBalance = getDefaultColumnBalance(loan, "Loan");
 		balanceDataList.add(loanBalance);
@@ -325,12 +324,17 @@ public class ThittamService {
 		var excessBalance = thittamDataRepository.getExcessData();
 		var excess = getDefaultColumnBalance(excessBalance, "Excess");
 		balanceDataList.add(excess);
-		var commission = thittamDataRepository.getCommissionData();
-		var commissonBalance = getDefaultColumnBalance(commission, "Commission");
-		balanceDataList.add(commissonBalance);
-		var bill = thittamDataRepository.getBillData();
-		var billBalance = getDefaultColumnBalance(bill, "Vasul Varavu");
-		balanceDataList.add(billBalance);
+		var tupleList = thittamDataRepository.getTrialSheet();
+		var allDatalist = getBalanceDataList(tupleList);
+		for (int i = allDatalist.size() - 1; i >= 0; i--) {
+			var data = allDatalist.get(i);
+			if (data.getName().contains("LOAN") || data.getName().contains("BILL")
+					|| data.getName().contains("COMMISSION") || data.getName().contains("SEETU")
+					|| data.getName().contains("EXCESS") || data.getName().contains("Balance")) {
+				allDatalist.remove(i);
+			}
+		}
+		balanceDataList.addAll(allDatalist);
 		return balanceDataList;
 	}
 

@@ -34,7 +34,7 @@ public class LoneService {
 			loanDto.setAddress(loneRequest.getAddress());
 			loanDto.setPhoneNo(loneRequest.getPhoneNo());
 			loanDto.setOrderNo(loneRequest.getOrderNo());
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDate parsedDate = LocalDate.parse(loneRequest.getCurrentDate(), formatter);
 			loanDto.setCurrentLoanDate(parsedDate);
 			loanDto.setLoanAmount(Integer.parseInt(loneRequest.getLoanAmount()));
@@ -86,7 +86,7 @@ public class LoneService {
 	}
 
 	public List<Loan> getAllTodayLoan(String lineId, String date) {
-		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate parsedDate = LocalDate.parse(date, formatters);
 		var response = loneRepository.findAllLoanForPresentDay(lineId, parsedDate);
 		return response;

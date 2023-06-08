@@ -51,7 +51,7 @@ public class DailyCollectionService {
 
 	public List<LedgerResponse> getAllActiveLoanLedger(String lineId) {
 		LocalDate localDate = LocalDate.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		var formattedDate = localDate.format(formatter);
 		LocalDate date = LocalDate.parse(formattedDate, formatter);
 		LocalDate belowTenDaysDate = date.minusDays(11);
@@ -87,7 +87,7 @@ public class DailyCollectionService {
 		GenericResponse genericResponse = new GenericResponse();
 		try {
 			LocalDate localDate = LocalDate.now();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			var formattedDate = localDate.format(formatter);
 			LocalDate date = LocalDate.parse(formattedDate, formatter);
 			var loanData = loanRepository.findByLoanNoAndLineId(request.getLineId(), request.getLoanNo());
@@ -128,7 +128,7 @@ public class DailyCollectionService {
 
 	public List<BillEntryResponse> getAllDailyCollection(DateCloseRequest request) {
 		var response = new ArrayList<BillEntryResponse>();
-		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate parsedDate = LocalDate.parse(request.getDate(), formatters);
 		var dailyCollection = dailyCollectionRepository.getAllDailyCollection(request.getLineId(), parsedDate);
 		if (!dailyCollection.isEmpty()) {
@@ -149,14 +149,14 @@ public class DailyCollectionService {
 		GenericResponse genericResponse = new GenericResponse();
 		try {
 			LocalDate localDate = LocalDate.now();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			var formattedDate = localDate.format(formatter);
 			LocalDate date = LocalDate.parse(formattedDate, formatter);
 			var loanData = loanRepository.findByLoanNoAndLineId(request.getLineId(), request.getLoanNo());
 			if (loanData != null) {
-				var balance = (loanData.getBalance()) + Integer.parseInt(request.getOldAmount());
-				balance = balance - Integer.parseInt(request.getNewAmountPaid());
-				if (loanData.getBalance() == 0) {
+				if (loanData.getBalance() == 0 && !loanData.isLoanActive()) {
+					var balance = Integer.parseInt(request.getOldAmount()) - loanData.getExcessAmount();
+					balance = balance - Integer.parseInt(request.getNewAmountPaid());
 					if (balance == 0) {
 						loanData.setBalance(0);
 						loanData.setLoanClosedDate(date);
@@ -177,6 +177,8 @@ public class DailyCollectionService {
 						loanData.setDailyUpdate(true);
 					}
 				} else {
+					var balance = (loanData.getBalance()) + Integer.parseInt(request.getOldAmount());
+					balance = balance - Integer.parseInt(request.getNewAmountPaid());
 					if (balance == 0) {
 						loanData.setBalance(0);
 						loanData.setLoanClosedDate(date);
@@ -216,7 +218,7 @@ public class DailyCollectionService {
 
 	public UpdateDailyCollectionResponse getparticularCollection(DailyCollectionRequest request) {
 		UpdateDailyCollectionResponse response = new UpdateDailyCollectionResponse();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate parsedDate = LocalDate.parse(request.getDate(), formatter);
 		var loanData = loanRepository.findByLoanNoAndLineId(request.getLineId(), request.getLoanNo());
 		var dailyCollection = dailyCollectionRepository.getByLoanId(loanData.getLoanId(), parsedDate);

@@ -79,7 +79,7 @@ public class ReportService {
 
 	public List<PastDateBillResponse> getAllPastDateBill(String lineId, String date) {
 		var response = new ArrayList<PastDateBillResponse>();
-		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate parsedDate = LocalDate.parse(date, formatters);
 		var dailyCollection = dailyCollectionRepository.getAllDailyCollection(lineId, parsedDate);
 		if (!dailyCollection.isEmpty()) {
@@ -98,7 +98,7 @@ public class ReportService {
 
 	public List<BillNotPaidResponse> getAllBillNotPaid(String lineId, String date) {
 		var response = new ArrayList<BillNotPaidResponse>();
-		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate parsedDate = LocalDate.parse(date, formatters);
 		var dailyCollection = dailyCollectionRepository.getAllDailyCollectionNotPaid(lineId, parsedDate);
 		if (!dailyCollection.isEmpty()) {
@@ -141,7 +141,7 @@ public class ReportService {
 
 	public List<IndividualReportCollectionResponse> getMonthlyBill(String lineId, String startDate, String endDate) {
 		var response = new ArrayList<IndividualReportCollectionResponse>();
-		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate startParsedDate = LocalDate.parse(startDate, formatters);
 		LocalDate endParsedDate = LocalDate.parse(endDate, formatters);
 		var totalData = dailyTotalRepository.findTotalForParticularRange(lineId, startParsedDate, endParsedDate);
@@ -167,6 +167,8 @@ public class ReportService {
 				data.setName(loanData.get(i).getName());
 				data.setAddress(loanData.get(i).getAddress());
 				data.setLoanAmount(loanData.get(i).getLoanAmount());
+				data.setPhoneNo(loanData.get(i).getPhoneNo());
+				data.setUserNo(loanData.get(i).getUserNo());
 				response.add(data);
 			}
 		}
@@ -198,6 +200,7 @@ public class ReportService {
 				data.setAddress(loanData.get(i).getAddress());
 				data.setLoanAmount(loanData.get(i).getLoanAmount());
 				data.setDate(loanData.get(i).getCurrentLoanDate().toString());
+				data.setCloseDate(loanData.get(i).getAppxLoanClosedDate().toString());
 				response.add(data);
 			}
 		}
@@ -248,7 +251,7 @@ public class ReportService {
 
 	public List<LedgerResponse> getLoanForLedger(String lineId, String startDate, String endDate) {
 		var response = new ArrayList<LedgerResponse>();
-		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate startParsedDate = LocalDate.parse(startDate, formatters);
 		LocalDate endParsedDate = LocalDate.parse(endDate, formatters);
 		var loanData = loneRepository.getAllActiveLoanForReport(lineId);
@@ -305,7 +308,7 @@ public class ReportService {
 
 	public List<BulkPaidResponse> getBulkPaidLoan(String lineId, String startDate, String endDate) {
 		var response = new ArrayList<BulkPaidResponse>();
-		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate startParsedDate = LocalDate.parse(startDate, formatters);
 		LocalDate endParsedDate = LocalDate.parse(endDate, formatters);
 		var loanData = loneRepository.getClosedLoanForParticularDateRange(lineId, startParsedDate, endParsedDate);
@@ -395,7 +398,7 @@ public class ReportService {
 	public MonthlyLoanResponse getMonthlyLoan(String lineId, String startDate, String endDate) {
 		MonthlyLoanResponse monthlyLoanResponse = new MonthlyLoanResponse();
 		var list = new ArrayList<ClosedPartyResponse>();
-		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate startParsedDate = LocalDate.parse(startDate, formatters);
 		LocalDate endParsedDate = LocalDate.parse(endDate, formatters);
 		var loanData = loneRepository.getActiveLoanForParticularDateRange(lineId, startParsedDate, endParsedDate);

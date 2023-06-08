@@ -89,7 +89,7 @@ public class LineService {
 
 	public List<LineDto> getAllLineWithDateClose() {
 		var response = new ArrayList<LineDto>();
-		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		var entity = lineRepository.findAll();
 		for (int i = 0; i < entity.size(); i++) {
 			LineDto lineDto = new LineDto();

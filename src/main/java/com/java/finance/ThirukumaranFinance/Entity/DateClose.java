@@ -32,7 +32,7 @@ public class DateClose {
     private String lineId;
 	
 	@Column(name = "created_on")
-	private LocalDate createdOn;
+	private LocalDateTime createdOn;
 	
 	
 
