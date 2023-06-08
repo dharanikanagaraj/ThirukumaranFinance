@@ -1,4 +1,4 @@
---insert into line_details(id, line_id, line_name, created_on, updated_on) values (101, 'Ln01', 'Line 1', '2023-01-10', '2023-05-10');
+insert into line_details(id, line_id, line_name, created_on, updated_on) values (101, 'Ln01', 'Line 1', '2023-01-10', '2023-05-10');
 --insert into line_details(id, line_id, line_name, created_on, updated_on) values (202, 'Ln02', 'Line 2', '2001-02-10', '2012-05-23');
 --INSERT INTO user_loan_details(loan_id, loan_no,user_no, name, address, phone_no, order_no, current_loan_date, loan_amount, seetu_amount, commission_amount, interest, appx_loan_closed_date, loan_closed_date, excess_amount, line_id, balance, is_loan_active, daily_update) VALUES
 --(101, 'Lon01', 'US01', 'userone','123,thangavel','1234567898', '1','2023-05-30','5000','2','500','10','2023-09-07',null,'0','Ln01','5000',true,false);
