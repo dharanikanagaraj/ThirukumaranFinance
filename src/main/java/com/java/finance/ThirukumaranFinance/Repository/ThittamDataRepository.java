@@ -73,6 +73,9 @@ public interface ThittamDataRepository extends JpaRepository<ThittamData, Long> 
 	
 	@Query(value = "SELECT SUM(debit) AS TotalDebit, SUM(credit) AS TotalCredit FROM thittam_data  where name like '%LOAN' and date >= :startDate and date <= :endDate", nativeQuery = true)
 	List<Tuple> getLoanDataWithDate(@Param("startDate")LocalDate startDate, @Param("endDate")LocalDate endDate);
+ 
+	@Query(value = "SELECT * FROM thittam_data td WHERE td.name ='Opening Balance'", nativeQuery = true)
+	ThittamData getOpeningBalance();
 	
 	
 }

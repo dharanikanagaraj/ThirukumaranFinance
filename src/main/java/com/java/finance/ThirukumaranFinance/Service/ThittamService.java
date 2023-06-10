@@ -338,4 +338,16 @@ public class ThittamService {
 		return balanceDataList;
 	}
 
+	public GenericResponse getOpeningBalance() {
+		GenericResponse genericResponse = new GenericResponse();
+		var response = thittamDataRepository.getOpeningBalance();
+		if(response == null) {
+			genericResponse.setMessage("false");
+			return genericResponse;
+		}else {
+			genericResponse.setMessage("true");
+			return genericResponse;
+		}
+	}
+
 }

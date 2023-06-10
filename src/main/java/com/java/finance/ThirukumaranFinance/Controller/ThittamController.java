@@ -117,6 +117,12 @@ public class ThittamController {
 		var response = thittamService.getAlldataforTrailSheet();
 		return response;
 	}
+	
+	@GetMapping("/openingbalance")
+	public GenericResponse getOpeningBalance() {
+		var response = thittamService.getOpeningBalance();
+		return response;
+	}
 
 
 }
