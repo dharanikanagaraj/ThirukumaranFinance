@@ -3,6 +3,7 @@ package com.java.finance.ThirukumaranFinance.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import com.java.finance.ThirukumaranFinance.Domain.GenericResponse;
@@ -27,7 +28,7 @@ public class LineMemberService {
 			lineMemberDto.setMemberName(lineMemberRequest.getMemberName());
 			lineMemberDto.setAddress(lineMemberRequest.getAddress());
 			lineMemberDto.setPhoneNo(lineMemberRequest.getPhoneNo());
-			lineMemberDto.setPassword(lineMemberRequest.getPassword());
+			lineMemberDto.setPassword(hashPassword(lineMemberRequest.getPassword()));
 			lineMemberDto.setCreatedOn(LocalDate.now());
 			lineMemberDto.setUpdatedOn(LocalDate.now());
 			lineMemberRepository.save(lineMemberDto);
@@ -40,6 +41,10 @@ public class LineMemberService {
 			return genericResponse;
 		}
 	}
+	
+	public String hashPassword(String plainTextPassword){
+		return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
+	}
 
 	public GenericResponse updateLineMember(UpdateLineMemberRequest lineMemberRequest) {
 		GenericResponse genericResponse = new GenericResponse();
@@ -48,7 +53,7 @@ public class LineMemberService {
 																								// be editable
 			entity.setMemberName(lineMemberRequest.getMemberName());
 			entity.setAddress(lineMemberRequest.getAddress());
-			entity.setPassword(lineMemberRequest.getPassword());
+			entity.setPassword(hashPassword(lineMemberRequest.getPassword()));
 			entity.setPhoneNo(lineMemberRequest.getPhoneNo());
 			entity.setUpdatedOn(LocalDate.now());
 			lineMemberRepository.save(entity);

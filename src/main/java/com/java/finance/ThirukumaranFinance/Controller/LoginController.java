@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.java.finance.ThirukumaranFinance.Config.SecretKeyGenerator;
 import com.java.finance.ThirukumaranFinance.Domain.LoginRequest;
 import com.java.finance.ThirukumaranFinance.Service.LoginService;
 
-import jakarta.servlet.ServletException;
-import lombok.RequiredArgsConstructor;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.ServletException;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/auth/")
@@ -71,8 +72,9 @@ public class LoginController {
 		}
 		
 		// Generating token only when the user is validated
+		String secretKey = SecretKeyGenerator.generateSecretKey();
 		String jwtToken = Jwts.builder().setSubject(username).setIssuedAt(new Date())
-							.signWith(SignatureAlgorithm.HS256, "CplayerAppkey").compact();
+							.signWith(SignatureAlgorithm.HS256, secretKey).compact();
 		return jwtToken;
 	}
 	
@@ -118,9 +120,11 @@ public class LoginController {
 		}
 		
 		// Generating token only when the user is validated
+		String secretKey = SecretKeyGenerator.generateSecretKey();
 		String jwtToken = Jwts.builder().setSubject(username).setIssuedAt(new Date())
 							.setExpiration(new Date(System.currentTimeMillis()+ expireTime))
-							.signWith(SignatureAlgorithm.HS256, "CplayerAppkey").compact();
+							.signWith(SignatureAlgorithm.HS256, secretKey
+									+ "").compact();
 		return jwtToken;
 	}
 }

@@ -20,7 +20,7 @@ public class LoginService {
 	public boolean validate(String username, String password) {
 		var details=lineMemberRepository.findByPhoneNo(username);
 		String passwordhash=details.getPassword();
-		if (passwordhash.equalsIgnoreCase(password))
+		if (BCrypt.checkpw(password, passwordhash))
 		{
 			return true;
 		}
