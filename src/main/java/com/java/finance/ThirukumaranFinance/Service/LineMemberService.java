@@ -30,7 +30,6 @@ public class LineMemberService {
 			lineMemberDto.setPassword(lineMemberRequest.getPassword());
 			lineMemberDto.setCreatedOn(LocalDate.now());
 			lineMemberDto.setUpdatedOn(LocalDate.now());
-			lineMemberDto.setRole("LineMan");
 			lineMemberRepository.save(lineMemberDto);
 			genericResponse.setMessage("Line Member created Successfully");
 			return genericResponse;
@@ -52,7 +51,6 @@ public class LineMemberService {
 			entity.setPassword(lineMemberRequest.getPassword());
 			entity.setPhoneNo(lineMemberRequest.getPhoneNo());
 			entity.setUpdatedOn(LocalDate.now());
-			entity.setRole("LineMan");
 			lineMemberRepository.save(entity);
 			genericResponse.setMessage("Line Member Updated Successfully");
 			return genericResponse;
@@ -80,7 +78,7 @@ public class LineMemberService {
 	}
 
 	public List<LineMember> getAllLineMember() {
-		var entity = lineMemberRepository.findByRole("LineMan");
+		var entity = lineMemberRepository.findAll();
 		return entity;
 	}
 

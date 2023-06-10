@@ -26,7 +26,7 @@ public class LineMember {
 	@Column(name = "member_name")
 	private String memberName;
 	
-	@Column(name = "phone_no")
+	@Column(name = "phone_no") // unique
 	private String phoneNo;
 	
 	@Column(name = "address")
@@ -40,9 +40,6 @@ public class LineMember {
 	
 	@Column(name = "updated_on")
 	private LocalDate updatedOn;
-	
-	@Column(name= "role")
-	private String role; // add admin details in same table with access as Admin. login validation is in this table.
 	
 	
 
