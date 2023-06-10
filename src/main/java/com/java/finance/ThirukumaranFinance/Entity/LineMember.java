@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -17,8 +19,11 @@ public class LineMember {
 	private static final long serialversionUID = 1L;
 	
 	@Id
-	@GeneratedValue
-	private Long id;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "line_member_details_seq")
+	@SequenceGenerator(name = "line_member_details_seq", sequenceName = "line_member_details_seq", allocationSize = 1)
+	@Column(name = "id")
+	private int id;
+
 	
 	@Column(name = "lin_Mem_id")
 	private String linMemId; // sent from UI which should be next and next in serial order (eg:Lm01)

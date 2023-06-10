@@ -56,7 +56,7 @@ public class DateCloseService {
 			dateClose.setLineId(dateCloseRequest.getLineId());
 			dateClose.setDate(parsedDate);
 			dateCloseRepository.save(dateClose);
-			if (date == null) {
+			if (date.isEmpty()) {
 				var lineData = lineRepository.findByLineId(dateClose.getLineId());
 				updateDailyTotal(dateClose.getLineId(), dateClose.getDate());
 				updateLoanTable(dateClose.getLineId());

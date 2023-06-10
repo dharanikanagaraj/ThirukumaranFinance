@@ -17,6 +17,6 @@ public interface DateCloseRepository extends JpaRepository<DateClose, Long> {
 	List<DateClose> findByLineId(@Param("lineId") String lineId);
 
 	@Query(value = "SELECT * FROM date_close dc WHERE dc.line_id = :lineId and dc.date =:date", nativeQuery = true)
-	DateClose findByDate(@Param("lineId") String lineId,@Param("date")LocalDate parsedDate);
+	List<DateClose> findByDate(@Param("lineId") String lineId,@Param("date")LocalDate parsedDate);
 
 }
