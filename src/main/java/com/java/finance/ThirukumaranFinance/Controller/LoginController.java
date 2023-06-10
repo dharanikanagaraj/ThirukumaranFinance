@@ -123,8 +123,7 @@ public class LoginController {
 		String secretKey = SecretKeyGenerator.generateSecretKey();
 		String jwtToken = Jwts.builder().setSubject(username).setIssuedAt(new Date())
 							.setExpiration(new Date(System.currentTimeMillis()+ expireTime))
-							.signWith(SignatureAlgorithm.HS256, secretKey
-									+ "").compact();
+							.signWith(SignatureAlgorithm.HS256, secretKey ).compact();
 		return jwtToken;
 	}
 }
