@@ -186,6 +186,7 @@ public class ThittamService {
 		if (entity != null) {
 			thittamResponse.setOpeningBalance(entity.getBalance());
 			thittamResponse.setDate(parsedDate.toString());
+			thittamResponse.setPrevDate(parsedDate.minusDays(1).toString());
 			var dataList = thittamDataRepository.findThittamData(parsedDate);
 			if (!dataList.isEmpty()) {
 				var headDataRequestList = new ArrayList<HeadDataRequest>();

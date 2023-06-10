@@ -11,5 +11,7 @@ public class ThittamResponse{
 	
 	private String date;
 	
+	private String prevDate;
+	
 	private List<HeadDataRequest> thittamList;
 }
