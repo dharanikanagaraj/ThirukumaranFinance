@@ -150,6 +150,7 @@ public class ThittamService {
 			entity.setDate(parsedDate);
 			thittamDataRepository.save(entity);
 			genericResponse.setMessage("Balance created Successfully");
+			genericResponse.setCurrentDate(parsedDate.minusDays(1).toString());	
 			return genericResponse;
 		} catch (Exception e) {
 			System.out.println("Exception is ::::" + e.getMessage());

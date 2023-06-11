@@ -7,4 +7,6 @@ public class GenericResponse {
 	
 	private String message;
 	
+	private String currentDate;
+	
 }
