@@ -144,9 +144,7 @@ public class ThittamService {
 			var entity = new ThittamData();
 			entity.setName(request.getName());
 			entity.setBalance(request.getBalance());
-			if (request.getName().equalsIgnoreCase("Closing Balance")) {
-				entity.setExtraHead(true);
-			}
+			entity.setExtraHead(true);
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDate parsedDate = LocalDate.parse(request.getDate(), formatter);
 			entity.setDate(parsedDate);
