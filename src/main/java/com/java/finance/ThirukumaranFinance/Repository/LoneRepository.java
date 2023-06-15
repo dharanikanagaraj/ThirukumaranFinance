@@ -48,6 +48,9 @@ public interface LoneRepository extends JpaRepository<Loan, Long> {
 	@Query(value = "SELECT * FROM user_loan_details ld WHERE ld.line_id = :lineId and ld.is_loan_active = true and ld.current_loan_date >= :startDate and ld.current_loan_date <= :endDate", nativeQuery = true)
 	List<Loan> getActiveLoanForParticularDateRange(@Param("lineId")String lineId, @Param("startDate")LocalDate startDate, @Param("endDate")LocalDate endDate);
 	
+	@Query(value = "SELECT * FROM user_loan_details ld WHERE ld.line_id = :lineId and ld.current_loan_date >= :startDate and ld.current_loan_date <= :endDate", nativeQuery = true)
+	List<Loan> getAllLoanForParticularDateRange(@Param("lineId")String lineId, @Param("startDate")LocalDate startDate, @Param("endDate")LocalDate endDate);
+	
 	@Query(value = "SELECT * FROM user_loan_details ld WHERE ld.line_id = :lineId and ld.is_loan_active = true and ld.current_loan_date >= :startDate and ld.current_loan_date < :endDate", nativeQuery = true)
 	List<Loan> getLoanForLedger(@Param("lineId")String lineId, @Param("startDate")LocalDate startDate, @Param("endDate")LocalDate endDate);
 

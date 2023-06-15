@@ -63,12 +63,14 @@ public class AdminService {
 		GenericResponse genericResponse = new GenericResponse();
 		try {
 			var entity = adminRepository.findByAdminId(adminRequest.getAdminId());
+			if(entity != null){
 			if(validate(entity.getPassword(), adminRequest.getOldPassword())) {
 				entity.setUserName(adminRequest.getUserName());
 				entity.setPhoneNo(adminRequest.getPhoneNo());
 				entity.setPassword(hashPassword(adminRequest.getNewPassword()));
 				adminRepository.save(entity);
 			genericResponse.setMessage("Admin Updated Successfully");
+			}
 			return genericResponse;
 			}else {
 				genericResponse.setMessage("Old Password is not correct");

@@ -131,7 +131,7 @@ public class DailyCollectionService {
 		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate parsedDate = LocalDate.parse(request.getDate(), formatters);
 		var dailyCollection = dailyCollectionRepository.getAllDailyCollection(request.getLineId(), parsedDate);
-		if (!dailyCollection.isEmpty()) {
+		if (dailyCollection != null && !dailyCollection.isEmpty()) {
 			for (int i = 0; i < dailyCollection.size(); i++) {
 				BillEntryResponse data = new BillEntryResponse();
 				data.setLoanNo(dailyCollection.get(i).getLoan().getLoanNo());
@@ -160,6 +160,7 @@ public class DailyCollectionService {
 					if (balance == 0) {
 						loanData.setBalance(0);
 						loanData.setLoanClosedDate(date);
+						loanData.setExcessAmount(0);
 						loanData.setLoanActive(false);
 						loanData.setDailyUpdate(true);
 					} else if (balance < 0) {
@@ -181,6 +182,7 @@ public class DailyCollectionService {
 					balance = balance - Integer.parseInt(request.getNewAmountPaid());
 					if (balance == 0) {
 						loanData.setBalance(0);
+						loanData.setExcessAmount(0);
 						loanData.setLoanClosedDate(date);
 						loanData.setLoanActive(false);
 						loanData.setDailyUpdate(true);

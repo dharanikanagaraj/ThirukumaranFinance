@@ -42,7 +42,7 @@ public class ReportService {
 	public List<IndividualReportLoanResponse> getActiveLoan(String lineId) {
 		var response = new ArrayList<IndividualReportLoanResponse>();
 		var loanData = loneRepository.getAllActiveLoanForReport(lineId);
-		if (!loanData.isEmpty()) {
+		if (loanData != null && !loanData.isEmpty()) {
 			for (int i = 0; i < loanData.size(); i++) {
 				IndividualReportLoanResponse data = new IndividualReportLoanResponse();
 				data.setLoanNo(loanData.get(i).getLoanNo());
@@ -62,7 +62,7 @@ public class ReportService {
 	public List<IndividualReportCollectionResponse> getAllDailyCollectionForLoan(String lineId, String loanNo) {
 		var response = new ArrayList<IndividualReportCollectionResponse>();
 		var loandata = loneRepository.findByLoanNoAndLineId(lineId, loanNo);
-		if (loandata != null) {
+		if (loandata != null && loandata != null) {
 			var dailyCollection = dailyCollectionRepository.getAllByLoanId(loandata.getLoanId());
 			if (!dailyCollection.isEmpty()) {
 				for (int i = 0; i < dailyCollection.size(); i++) {
@@ -82,7 +82,7 @@ public class ReportService {
 		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate parsedDate = LocalDate.parse(date, formatters);
 		var dailyCollection = dailyCollectionRepository.getAllDailyCollection(lineId, parsedDate);
-		if (!dailyCollection.isEmpty()) {
+		if (dailyCollection != null && !dailyCollection.isEmpty()) {
 			for (int i = 0; i < dailyCollection.size(); i++) {
 				PastDateBillResponse data = new PastDateBillResponse();
 				data.setLoanNo(dailyCollection.get(i).getLoan().getLoanNo());
@@ -101,7 +101,7 @@ public class ReportService {
 		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate parsedDate = LocalDate.parse(date, formatters);
 		var dailyCollection = dailyCollectionRepository.getAllDailyCollectionNotPaid(lineId, parsedDate);
-		if (!dailyCollection.isEmpty()) {
+		if (dailyCollection != null && !dailyCollection.isEmpty()) {
 			for (int i = 0; i < dailyCollection.size(); i++) {
 				BillNotPaidResponse data = new BillNotPaidResponse();
 				data.setLoanNo(dailyCollection.get(i).getLoan().getLoanNo());
@@ -120,7 +120,7 @@ public class ReportService {
 	public List<BillNotPaidResponse> getExcessAmount(String lineId) {
 		var response = new ArrayList<BillNotPaidResponse>();
 		var loanData = loneRepository.getLoanWithExcessAmount(lineId);
-		if (!loanData.isEmpty()) {
+		if (loanData != null && !loanData.isEmpty()) {
 			for (int i = 0; i < loanData.size(); i++) {
 				BillNotPaidResponse data = new BillNotPaidResponse();
 				data.setLoanNo(loanData.get(i).getLoanNo());
@@ -145,7 +145,7 @@ public class ReportService {
 		LocalDate startParsedDate = LocalDate.parse(startDate, formatters);
 		LocalDate endParsedDate = LocalDate.parse(endDate, formatters);
 		var totalData = dailyTotalRepository.findTotalForParticularRange(lineId, startParsedDate, endParsedDate);
-		if (!totalData.isEmpty()) {
+		if (totalData != null && !totalData.isEmpty()) {
 			for (int i = 0; i < totalData.size(); i++) {
 				IndividualReportCollectionResponse data = new IndividualReportCollectionResponse();
 				data.setId(totalData.get(i).getId());
@@ -160,7 +160,7 @@ public class ReportService {
 	public List<ClosedPartyResponse> getAllClosedParty(String lineId) {
 		var response = new ArrayList<ClosedPartyResponse>();
 		var loanData = loneRepository.getAllClosedParty(lineId);
-		if (!loanData.isEmpty()) {
+		if (loanData != null && !loanData.isEmpty()) {
 			for (int i = 0; i < loanData.size(); i++) {
 				ClosedPartyResponse data = new ClosedPartyResponse();
 				data.setLoanNo(loanData.get(i).getLoanNo());
@@ -178,7 +178,7 @@ public class ReportService {
 	public List<UserResponse> getAllUserList(String lineId) {
 		var response = new ArrayList<UserResponse>();
 		var loanData = loneRepository.getAllDistinctUser(lineId);
-		if (!loanData.isEmpty()) {
+		if (loanData != null && !loanData.isEmpty()) {
 			for (int i = 0; i < loanData.size(); i++) {
 				UserResponse data = new UserResponse();
 				data.setUserNo(loanData.get(i).getUserNo());
@@ -192,7 +192,7 @@ public class ReportService {
 	public List<ClosedPartyResponse> getAllClosedLoanForUser(String lineId, String userNo) {
 		var response = new ArrayList<ClosedPartyResponse>();
 		var loanData = loneRepository.getAllClosedLoanForUser(lineId, userNo);
-		if (!loanData.isEmpty()) {
+		if (loanData != null && !loanData.isEmpty()) {
 			for (int i = 0; i < loanData.size(); i++) {
 				ClosedPartyResponse data = new ClosedPartyResponse();
 				data.setLoanNo(loanData.get(i).getLoanNo());
@@ -232,7 +232,7 @@ public class ReportService {
 		var dailyCollection = dailyCollectionRepository.getNotPaidUser(lineId, startDate, endDate);
 		Map<Loan, List<Dailycollection>> dailyCollectionList = dailyCollection.stream()
 				.collect(Collectors.groupingBy(Dailycollection::getLoan));
-		if (!loanData.isEmpty()) {
+		if (loanData != null && !loanData.isEmpty()) {
 			for (int i = 0; i < loanData.size(); i++) {
 				var list = dailyCollectionList.get(loanData.get(i));
 				if (list != null && list.size() == number) {
@@ -255,7 +255,7 @@ public class ReportService {
 		LocalDate startParsedDate = LocalDate.parse(startDate, formatters);
 		LocalDate endParsedDate = LocalDate.parse(endDate, formatters);
 		var loanData = loneRepository.getAllActiveLoanForReport(lineId);
-		if (!loanData.isEmpty()) {
+		if (loanData != null && !loanData.isEmpty()) {
 			for (int i = 0; i < loanData.size(); i++) {
 				LedgerResponse ledgerResponse = new LedgerResponse();
 				ledgerResponse.setLoanNo(loanData.get(i).getLoanNo());
@@ -287,7 +287,7 @@ public class ReportService {
 		var response = new ArrayList<NipResponse>();
 		LocalDate startDate = LocalDate.now().minusDays(number);
 		var loanData = loneRepository.getNipLoanList(lineId, startDate);
-		if (!loanData.isEmpty()) {
+		if (loanData != null && !loanData.isEmpty()) {
 			for (int i = 0; i < loanData.size(); i++) {
 				NipResponse nipResponse = new NipResponse();
 				nipResponse.setLoanNo(loanData.get(i).getLoanNo());
@@ -312,7 +312,7 @@ public class ReportService {
 		LocalDate startParsedDate = LocalDate.parse(startDate, formatters);
 		LocalDate endParsedDate = LocalDate.parse(endDate, formatters);
 		var loanData = loneRepository.getClosedLoanForParticularDateRange(lineId, startParsedDate, endParsedDate);
-		if (!loanData.isEmpty()) {
+		if (loanData != null &&  !loanData.isEmpty()) {
 			for (int i = 0; i < loanData.size(); i++) {
 				var dailyCollection = dailyCollectionRepository.getAllByLoanIdInDesc(loanData.get(i).getLoanId());
 				if (!dailyCollection.isEmpty()
@@ -335,7 +335,7 @@ public class ReportService {
 		TotalLedgerResponse totalLedgerResponse = new TotalLedgerResponse();
 		var loanList = new ArrayList<NipResponse>();
 		var loanReponse = loneRepository.getAllActiveLoanForReport(lineId);
-		if (!loanReponse.isEmpty()) {
+		if (loanReponse != null && !loanReponse.isEmpty()) {
 			totalLedgerResponse.setLoanCount(loanReponse.size());
 			for (int i = 0; i < loanReponse.size(); i++) {
 				NipResponse nipResponse = new NipResponse();
@@ -376,7 +376,7 @@ public class ReportService {
 			startParsedDate = LocalDate.now().minusDays(6);
 			loanReponse = loneRepository.getNipLoanList(lineId, startParsedDate);
 		}
-		if (!loanReponse.isEmpty()) {
+		if (loanReponse != null && !loanReponse.isEmpty()) {
 			totalLedgerResponse.setLoanCount(loanReponse.size());
 			for (int i = 0; i < loanReponse.size(); i++) {
 				NipResponse nipResponse = new NipResponse();
@@ -402,7 +402,7 @@ public class ReportService {
 		LocalDate startParsedDate = LocalDate.parse(startDate, formatters);
 		LocalDate endParsedDate = LocalDate.parse(endDate, formatters);
 		var loanData = loneRepository.getActiveLoanForParticularDateRange(lineId, startParsedDate, endParsedDate);
-		if (!loanData.isEmpty()) {
+		if (loanData != null && !loanData.isEmpty()) {
 			for (int i = 0; i < loanData.size(); i++) {
 				ClosedPartyResponse data = new ClosedPartyResponse();
 				data.setLoanNo(loanData.get(i).getLoanNo());
