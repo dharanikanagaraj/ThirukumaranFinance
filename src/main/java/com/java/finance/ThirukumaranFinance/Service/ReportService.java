@@ -401,7 +401,7 @@ public class ReportService {
 		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate startParsedDate = LocalDate.parse(startDate, formatters);
 		LocalDate endParsedDate = LocalDate.parse(endDate, formatters);
-		var loanData = loneRepository.getActiveLoanForParticularDateRange(lineId, startParsedDate, endParsedDate);
+		var loanData = loneRepository.getAllLoanForParticularDateRange(lineId, startParsedDate, endParsedDate);
 		if (loanData != null && !loanData.isEmpty()) {
 			for (int i = 0; i < loanData.size(); i++) {
 				ClosedPartyResponse data = new ClosedPartyResponse();
