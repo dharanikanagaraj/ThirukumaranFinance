@@ -242,6 +242,7 @@ public class ReportService {
 					data.setAddress(loanData.get(i).getAddress());
 					data.setLoanAmount(loanData.get(i).getLoanAmount());
 					data.setDate(loanData.get(i).getCurrentLoanDate().toString());
+					data.setCloseDate(loanData.get(i).getAppxLoanClosedDate().toString());
 					response.add(data);
 				}
 			}
