@@ -32,7 +32,7 @@ public interface ThittamDataRepository extends JpaRepository<ThittamData, Long> 
 	@Query(value = "SELECT * FROM thittam_data td WHERE td.date =:date", nativeQuery = true)
 	List<ThittamData> findThittamData(@Param("date")LocalDate date);
 	
-	@Query(value = "SELECT * FROM thittam_data td WHERE td.date >= :startDate and td.date <= :endDate order by td.date asc", nativeQuery = true)
+	@Query(value = "SELECT * FROM thittam_data td WHERE td.date >= :startDate and td.date <= :endDate order by td.date asc, CASE WHEN td.name = 'Opening Balance' THEN 0 WHEN td.name = 'Closing Balance' THEN 2 ELSE 1 END ASC", nativeQuery = true)
 	List<ThittamData> getAccountData(@Param("startDate")LocalDate startDate, @Param("endDate")LocalDate endDate);
 	
 	@Query(value = "SELECT * FROM thittam_data td WHERE td.name =:name and td.date >= :startDate and td.date <= :endDate order by td.date asc", nativeQuery = true)
