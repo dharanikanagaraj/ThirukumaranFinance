@@ -167,6 +167,8 @@ public class ThittamService {
 			LocalDate parsedDate = LocalDate.parse(date, formatter);
 			var data = thittamDataRepository.findThittamDataforExtraHead(parsedDate);
 			thittamDataRepository.deleteAll(data);
+			var entity = thittamDataRepository.findByNameAndDateForBalance("Balance", parsedDate.minusDays(1));
+			thittamDataRepository.delete(entity);
 			genericResponse.setMessage("Data deleted Successfully");
 			return genericResponse;
 		} catch (Exception e) {

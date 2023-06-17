@@ -32,10 +32,10 @@ public interface ThittamDataRepository extends JpaRepository<ThittamData, Long> 
 	@Query(value = "SELECT * FROM thittam_data td WHERE td.date =:date", nativeQuery = true)
 	List<ThittamData> findThittamData(@Param("date")LocalDate date);
 	
-	@Query(value = "SELECT * FROM thittam_data td WHERE td.date >= :startDate and td.date <= :endDate", nativeQuery = true)
+	@Query(value = "SELECT * FROM thittam_data td WHERE td.date >= :startDate and td.date <= :endDate order by td.date asc", nativeQuery = true)
 	List<ThittamData> getAccountData(@Param("startDate")LocalDate startDate, @Param("endDate")LocalDate endDate);
 	
-	@Query(value = "SELECT * FROM thittam_data td WHERE td.name =:name and td.date >= :startDate and td.date <= :endDate", nativeQuery = true)
+	@Query(value = "SELECT * FROM thittam_data td WHERE td.name =:name and td.date >= :startDate and td.date <= :endDate order by td.date asc", nativeQuery = true)
 	List<ThittamData> getIndividualData(@Param("name")String name, @Param("startDate")LocalDate startDate, @Param("endDate")LocalDate endDate);
 	
 	@Query(value = "SELECT name, SUM(debit) AS TotalDebit, SUM(credit) AS TotalCredit FROM thittam_data GROUP BY name", nativeQuery = true)
