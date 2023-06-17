@@ -267,9 +267,11 @@ public class ThittamService {
 
 	private BalanceData getOpeningBalance(ThittamData entity) {
 		BalanceData balanceData = new BalanceData();
+		if(entity != null) {
 		balanceData.setName("Opening Balance");
 		balanceData.setCredit(entity.getBalance());
 		balanceData.setDebit(0);
+		}
 		return balanceData;
 	}
 
