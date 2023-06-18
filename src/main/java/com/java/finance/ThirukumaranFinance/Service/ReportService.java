@@ -332,29 +332,6 @@ public class ReportService {
 		return response;
 	}
 
-	public TotalLedgerResponse getLoanForLedger(String lineId) {
-		TotalLedgerResponse totalLedgerResponse = new TotalLedgerResponse();
-		var loanList = new ArrayList<NipResponse>();
-		var loanReponse = loneRepository.getAllActiveLoanForReport(lineId);
-		if (loanReponse != null && !loanReponse.isEmpty()) {
-			totalLedgerResponse.setLoanCount(loanReponse.size());
-			for (int i = 0; i < loanReponse.size(); i++) {
-				NipResponse nipResponse = new NipResponse();
-				nipResponse.setLoanNo(loanReponse.get(i).getLoanNo());
-				nipResponse.setName(loanReponse.get(i).getName());
-				nipResponse.setAddress(loanReponse.get(i).getAddress());
-				nipResponse.setLoanDate(loanReponse.get(i).getCurrentLoanDate().toString());
-				nipResponse.setCloseDate(loanReponse.get(i).getAppxLoanClosedDate().toString());
-				nipResponse.setLoanAmount(loanReponse.get(i).getLoanAmount());
-				nipResponse.setPaidAmount(loanReponse.get(i).getLoanAmount() - loanReponse.get(i).getBalance());
-				nipResponse.setBalance(loanReponse.get(i).getBalance());
-				loanList.add(nipResponse);
-			}
-			totalLedgerResponse.setLoanData(loanList);
-		}
-		return totalLedgerResponse;
-	}
-
 	public TotalLedgerResponse getLoanForLedgerForDateRange(String lineId, String dateRange) {
 		TotalLedgerResponse totalLedgerResponse = new TotalLedgerResponse();
 		var loanList = new ArrayList<NipResponse>();
@@ -362,7 +339,7 @@ public class ReportService {
 		LocalDate endParsedDate = null;
 		List<Loan> loanReponse = null;
 		if (dateRange.equalsIgnoreCase("all")) {
-			getLoanForLedger(lineId);
+			loanReponse = loneRepository.getAllActiveLoanForReport(lineId);
 		}else if (dateRange.equalsIgnoreCase("below120")) {
 			startParsedDate = LocalDate.now().minusDays(2);
 			endParsedDate = LocalDate.now();

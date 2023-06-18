@@ -122,12 +122,6 @@ public class ReportsController {
 		var response = reportService.getBulkPaidLoan(request.getLineId(),request.getStartDate(),request.getEndDate());
 		return response;
 	}
-
-    @PostMapping("/totalLedger/all")
-    public TotalLedgerResponse getLoanForLedger(@RequestBody LineIdRequest request) {
-    	var response = reportService.getLoanForLedger(request.getLineId());
-		return response;
-    }
     
     @PostMapping("/totalLedger/dateRange")
     public TotalLedgerResponse getLoanForLedgerForDateRange(@RequestBody TotalLedgerRequest request) {
