@@ -361,7 +361,9 @@ public class ReportService {
 		LocalDate startParsedDate = null;
 		LocalDate endParsedDate = null;
 		List<Loan> loanReponse = null;
-		if (dateRange.equalsIgnoreCase("below120")) {
+		if (dateRange.equalsIgnoreCase("all")) {
+			getLoanForLedger(lineId);
+		}else if (dateRange.equalsIgnoreCase("below120")) {
 			startParsedDate = LocalDate.now().minusDays(2);
 			endParsedDate = LocalDate.now();
 			loanReponse = loneRepository.getLoanForLedger(lineId, startParsedDate, endParsedDate);
