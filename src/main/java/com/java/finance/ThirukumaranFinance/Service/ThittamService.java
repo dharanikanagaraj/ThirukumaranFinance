@@ -374,7 +374,8 @@ public class ThittamService {
 		GenericResponse genericResponse = new GenericResponse();
 		var response = thittamDataRepository.findByClosingBalance();
 		if(response != null) {
-			genericResponse.setCurrentDate(response.getDate().toString());
+			var thittamDate = response.getDate().plusDays(1);
+			genericResponse.setCurrentDate(thittamDate.toString());
 		}
 		return genericResponse;
 	}
