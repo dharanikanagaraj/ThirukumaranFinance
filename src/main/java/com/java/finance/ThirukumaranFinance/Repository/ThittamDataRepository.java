@@ -26,6 +26,12 @@ public interface ThittamDataRepository extends JpaRepository<ThittamData, Long> 
 	
 	@Query(value = "SELECT * FROM thittam_data td WHERE td.name = 'Opening Balance'", nativeQuery = true)
 	ThittamData findByName();
+	
+	@Query(value = "SELECT * FROM thittam_data td WHERE td.name LIKE '%Balance'  order by td.date desc LIMIT 1", nativeQuery = true)
+	ThittamData findByClosingBalance();
+	
+	@Query(value = "SELECT * FROM thittam_data td WHERE td.name LIKE '%Balance'  and td.date=:date", nativeQuery = true)
+	ThittamData findClosingBalanceWithDate(@Param("date")LocalDate date);
 
 	ThittamData findById(int id);
 	

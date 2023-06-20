@@ -123,6 +123,12 @@ public class ThittamController {
 		var response = thittamService.getOpeningBalance();
 		return response;
 	}
+	
+	@GetMapping("/dateForThittam")
+	public GenericResponse getThittamDate() {
+		var response = thittamService.getThittamDate();
+		return response;
+	}
 
 
 }

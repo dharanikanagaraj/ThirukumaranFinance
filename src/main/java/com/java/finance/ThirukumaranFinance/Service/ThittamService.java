@@ -262,9 +262,22 @@ public class ThittamService {
 			}
 		}
 		balanceDataList.addAll(allDatalist);
+		var cashOnHand = thittamDataRepository.findClosingBalanceWithDate(endDate);
+		var cash = getCashOnHand(cashOnHand);
+		balanceDataList.add(cash);
 		return balanceDataList;
 	}
-
+    
+	private BalanceData getCashOnHand(ThittamData entity) {
+		BalanceData balanceData = new BalanceData();
+		if(entity != null) {
+		balanceData.setName("Cash On Hand");
+		balanceData.setCredit(entity.getBalance());
+		balanceData.setDebit(0);
+		}
+		return balanceData;
+	}
+	
 	private BalanceData getOpeningBalance(ThittamData entity) {
 		BalanceData balanceData = new BalanceData();
 		if(entity != null) {
@@ -339,6 +352,9 @@ public class ThittamService {
 			}
 		}
 		balanceDataList.addAll(allDatalist);
+		var cashOnHand = thittamDataRepository.findByClosingBalance();
+		var cash = getCashOnHand(cashOnHand);
+		balanceDataList.add(cash);
 		return balanceDataList;
 	}
 
@@ -352,6 +368,15 @@ public class ThittamService {
 			genericResponse.setMessage("true");
 			return genericResponse;
 		}
+	}
+
+	public GenericResponse getThittamDate() {
+		GenericResponse genericResponse = new GenericResponse();
+		var response = thittamDataRepository.findByClosingBalance();
+		if(response != null) {
+			genericResponse.setCurrentDate(response.getDate().toString());
+		}
+		return genericResponse;
 	}
 
 }
