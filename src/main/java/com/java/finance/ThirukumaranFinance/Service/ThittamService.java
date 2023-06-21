@@ -234,6 +234,9 @@ public class ThittamService {
 		LocalDate endDate = LocalDate.parse(request.getEndDate(), formatter);
 		var balanceDataList = new ArrayList<BalanceData>();
 		var entity = thittamDataRepository.findByNameAndDateForBalance("Balance", startDate.minusDays(1));
+		if(entity == null) {
+			entity = thittamDataRepository.findByName();
+		}
 		var openingBalance = getOpeningBalance(entity);
 		balanceDataList.add(openingBalance);
 		var bill = thittamDataRepository.getBillDataWithDate(startDate, endDate);
@@ -262,7 +265,7 @@ public class ThittamService {
 			}
 		}
 		balanceDataList.addAll(allDatalist);
-		var cashOnHand = thittamDataRepository.findClosingBalanceWithDate(endDate);
+		var cashOnHand = thittamDataRepository.findClosingBalance();
 		var cash = getCashOnHand(cashOnHand);
 		balanceDataList.add(cash);
 		return balanceDataList;
@@ -352,7 +355,7 @@ public class ThittamService {
 			}
 		}
 		balanceDataList.addAll(allDatalist);
-		var cashOnHand = thittamDataRepository.findByClosingBalance();
+		var cashOnHand = thittamDataRepository.findClosingBalance();
 		var cash = getCashOnHand(cashOnHand);
 		balanceDataList.add(cash);
 		return balanceDataList;
